@@ -6,7 +6,7 @@ export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
-  const { token, setToken } = useContext(SpaceBookContext)
+  const { setToken } = useContext(SpaceBookContext)
 
   const validateLoginDetails = () => {
     let passedValidation = true
