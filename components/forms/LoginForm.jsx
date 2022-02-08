@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack } from 'native-base'
+import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
+  const { token, setToken } = useContext(SpaceBookContext)
 
   const validateLoginDetails = () => {
     let passedValidation = true
@@ -34,8 +36,30 @@ export default function LoginForm ({ navigation }) {
     return passedValidation
   }
 
-  const onSubmit = () => {
-    validateLoginDetails() ? console.log('Submitted') : console.log('Failed')
+  const onSubmit = async () => {
+    validateLoginDetails() ? login() : console.log('Failed')
+  }
+
+  const login = async () => {
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
+      })
+      const json = await response.json()
+      console.log(json)
+      setToken(json.token)
+      navigation.push('Home')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
