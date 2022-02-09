@@ -1,12 +1,15 @@
 import React, { useContext, useState } from 'react'
-import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack } from 'native-base'
+import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
 import { SpaceBookContext } from '../../context/SpacebookContext'
+
+// Import custom
+import ErrorPopup from '../error-popup/ErrorPopup'
 
 export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
-  const { setToken } = useContext(SpaceBookContext)
+  const { setToken, errorAlertVisible, setErrorAlertProps } = useContext(SpaceBookContext)
 
   const validateLoginDetails = () => {
     let passedValidation = true
@@ -15,9 +18,12 @@ export default function LoginForm ({ navigation }) {
     if (formData.email === undefined || formData.email === '') {
       passedValidation = false
       setEmailErrorReason('Email is required')
-    } else if (formData.email.length < 3) {
+    } else if (formData.email.length < 6) {
       passedValidation = false
-      setEmailErrorReason('Email cannot be less than 3 characters')
+      setEmailErrorReason('Email cannot be less than 6 characters')
+    } else if (!formData.email.includes('@')) {
+      passedValidation = false
+      setEmailErrorReason('Email is not vaild')
     } else {
       setEmailErrorReason('')
     }
@@ -26,9 +32,9 @@ export default function LoginForm ({ navigation }) {
     if (formData.password === undefined || formData.password === '') {
       passedValidation = false
       setPasswordErrorReason('Password is required')
-    } else if (formData.password.length < 3) {
+    } else if (formData.password.length < 6) {
       passedValidation = false
-      setPasswordErrorReason('Password cannot be less than 3 characters')
+      setPasswordErrorReason('Password cannot be less than 6 characters')
     } else {
       setPasswordErrorReason('')
     }
@@ -37,7 +43,9 @@ export default function LoginForm ({ navigation }) {
   }
 
   const onSubmit = async () => {
-    validateLoginDetails() ? login() : console.log('Failed')
+    if (validateLoginDetails()) {
+      login()
+    }
   }
 
   const login = async () => {
@@ -59,10 +67,13 @@ export default function LoginForm ({ navigation }) {
       navigation.push('Home')
     } catch (err) {
       console.log(err)
+      setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
     }
   }
 
   return (
+    <View w="100%" h='100%'>
+      {errorAlertVisible && <ErrorPopup />}
       <Box bg="title.bg" h='100%' w="100%">
         <Center w={'100%'} h={'90%'} bg="title.bg">
           <Box safeArea w="90%" bg="white" p='5'>
@@ -99,5 +110,6 @@ export default function LoginForm ({ navigation }) {
           </Box>
         </Center>
       </Box>
+    </View>
   )
 }

@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
+import React, { useContext, useState } from 'react'
+import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box, AlertDialog } from 'native-base'
+
+// Custom imports
+import { SpaceBookContext } from '../../context/SpacebookContext'
+import ErrorPopup from '../../components/error-popup/ErrorPopup'
 
 export default function SignUpScreen () {
+  const { setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [surnameErrrorReason, setSurnameErrorReason] = useState('')
@@ -38,9 +43,12 @@ export default function SignUpScreen () {
     if (formData.email === undefined || formData.surname === '') {
       passedValidation = false
       setEmailErrorReason('Email is required')
-    } else if (formData.email.length < 3) {
+    } else if (formData.email.length < 6) {
       passedValidation = false
-      setEmailErrorReason('Email cannot be less than 3 characters')
+      setEmailErrorReason('Email cannot be less than 6 characters')
+    } else if (!formData.email.includes('@')) {
+      passedValidation = false
+      setEmailErrorReason('Email not valid')
     } else {
       setEmailErrorReason('')
     }
@@ -49,9 +57,9 @@ export default function SignUpScreen () {
     if (formData.password === undefined || formData.password === '') {
       passedValidation = false
       setPasswordErrorReason('Password is required')
-    } else if (formData.password.length < 3) {
+    } else if (formData.password.length < 6) {
       passedValidation = false
-      setPasswordErrorReason('Password cannot be less than 3 characters')
+      setPasswordErrorReason('Password cannot be less than 6 characters')
     } else {
       setPasswordErrorReason('')
     }
@@ -60,9 +68,6 @@ export default function SignUpScreen () {
     if (formData.confirmPassword === undefined || formData.confirmPassword === '') {
       passedValidation = false
       setConfirmPasswordErrorReason('Please re-type your password')
-    } else if (formData.confirmPassword !== formData.password) {
-      passedValidation = false
-      setConfirmPasswordErrorReason('Passwords do not match')
     } else {
       setConfirmPasswordErrorReason('')
     }
@@ -70,20 +75,45 @@ export default function SignUpScreen () {
     return passedValidation
   }
 
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
-  useEffect(() => {
-    console.log(confirmPasswordErrorReason)
-  }, [confirmPasswordErrorReason])
-
   const onSubmit = () => {
-    validateDetails() ? console.log('Submitted') : console.log('Failed')
+    if (validateDetails()) {
+      signUp()
+    }
+  }
+
+  const signUp = async () => {
+    console.log(formData)
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/user', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.surname,
+          email: formData.email,
+          password: formData.password
+        })
+      })
+
+      if (response.status === 400) {
+        const errorReason = await response.text()
+        const errorResponse = errorReason.includes('duplicate') ? 'Account already exists with this email' : 'Failed to sign up please try again'
+        setErrorAlertProps(`${response.statusText}`, `${errorResponse}`, true)
+      } else {
+        console.log(await response.json())
+      }
+    } catch (err) {
+      console.log(err)
+      setErrorAlertProps(`${err.message}`, 'Failed to sign up please try again', true)
+    }
   }
 
   return (
     <NativeBaseProvider theme={theme}>
+      {errorAlertVisible && <ErrorPopup />}
       <Center w="100%">
         <Box safeArea p="2" w="90%" maxW="290" py="8">
           <Heading size="lg" color="coolGray.800" _dark={{ color: 'warmGray.50' }} fontWeight="semibold">
