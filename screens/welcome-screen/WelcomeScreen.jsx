@@ -1,7 +1,9 @@
 import React from 'react'
 import { extendTheme, NativeBaseProvider, Center, Text } from 'native-base'
 
+// Custom  imports
 import LoginForm from '../../components/forms/LoginForm'
+
 export default function WelcomeScreen ({ navigation }) {
   return (
     <NativeBaseProvider theme={theme}>
