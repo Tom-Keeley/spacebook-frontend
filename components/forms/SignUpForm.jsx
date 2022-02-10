@@ -1,5 +1,6 @@
-import React, {useContext, useState} from 'react'
+import React, { useContext, useState } from 'react'
 import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
+import { AntDesign } from '@expo/vector-icons'
 
 // Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
@@ -135,12 +136,17 @@ export default function SignUpForm ({ navigation }) {
     }
   }
 
+  const onBackPress = () => {
+    navigation.goBack()
+  }
+
   return (
     <NativeBaseProvider theme={theme}>
       {loadingSpinnerVisible && <LoadingSpinner />}
       {errorAlertVisible && <ErrorPopup />}
-      <Center w="100%">
-        <Box safeArea p="2" w="90%" maxW="290" py="8">
+      <Center h='100%' w="100%">
+        <Box safeArea w="90%" maxW="290" py="8">
+          <AntDesign p="10" name="arrowleft" size={24} color="black" onPress={onBackPress} />
           <Heading size="lg" color="coolGray.800" _dark={{ color: 'warmGray.50' }} fontWeight="semibold">
             Welcome
           </Heading>
