@@ -66,10 +66,12 @@ export default function LoginForm ({ navigation }) {
 
       if (response.status === 400) {
         setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
+        setLoadingSpinnerVisible(false)
       } else {
         const json = await response.json()
         console.log(json)
         setToken(json.token)
+        setLoadingSpinnerVisible(false)
         navigation.push('Home')
       }
     } catch (err) {

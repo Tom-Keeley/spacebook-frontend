@@ -104,6 +104,7 @@ export default function SignUpForm ({ navigation }) {
         const errorReason = await response.text()
         const errorResponse = errorReason.includes('duplicate') ? 'Account already exists with this email' : 'Failed to sign up please try again'
         setErrorAlertProps(`${response.statusText}`, `${errorResponse}`, true)
+        setLoadingSpinnerVisible(false)
       } else {
         console.log(await response.json())
         try {
@@ -122,6 +123,7 @@ export default function SignUpForm ({ navigation }) {
           const json = await response.json()
           console.log(json)
           setToken(json.token)
+          setLoadingSpinnerVisible(false)
           navigation.push('Home')
         } catch (err) {
           console.log(err)
