@@ -10,6 +10,9 @@ export default function SpaceBookContextProvider ({children}) {
   const [errorAlertTitle, setErrorAlertTitle] = useState('')
   const [errorAlertMessage, setErrorAlertMessage] = useState('')
 
+  // Loading Spinner
+  const [loadingSpinnerVisible, setLoadingSpinnerVisible] = useState(false)
+
   const setErrorAlertProps = (alertTitle, alertMessage, alertVisible) => {
     setErrorAlertTitle(alertTitle)
     setErrorAlertMessage(alertMessage)
@@ -21,12 +24,18 @@ export default function SpaceBookContextProvider ({children}) {
     console.log(token)
   }, [token])
 
+  useEffect(() => {
+    console.log(loadingSpinnerVisible)
+  }, [loadingSpinnerVisible])
+
   return (
     <SpaceBookContext.Provider value={{
       token,
       setToken,
       errorAlertVisible,
       setErrorAlertVisible,
+      loadingSpinnerVisible,
+      setLoadingSpinnerVisible,
       errorAlertMessage,
       errorAlertTitle,
       setErrorAlertProps

@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react'
-import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box, AlertDialog } from 'native-base'
+import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
 
 // Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
+import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 
 export default function SignUpScreen () {
-  const { setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
+  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [surnameErrrorReason, setSurnameErrorReason] = useState('')
@@ -83,6 +84,7 @@ export default function SignUpScreen () {
 
   const signUp = async () => {
     console.log(formData)
+    setLoadingSpinnerVisible(true)
     try {
       const response = await fetch('http://localhost:3333/api/1.0.0/user', {
         method: 'POST',
@@ -113,6 +115,7 @@ export default function SignUpScreen () {
 
   return (
     <NativeBaseProvider theme={theme}>
+      {loadingSpinnerVisible && <LoadingSpinner />}
       {errorAlertVisible && <ErrorPopup />}
       <Center w="100%">
         <Box safeArea p="2" w="90%" maxW="290" py="8">
