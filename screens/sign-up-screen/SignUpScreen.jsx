@@ -6,8 +6,8 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
 import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 
-export default function SignUpScreen () {
-  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
+export default function SignUpScreen ({ navigation }) {
+  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible, setToken } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [surnameErrrorReason, setSurnameErrorReason] = useState('')
@@ -106,6 +106,26 @@ export default function SignUpScreen () {
         setErrorAlertProps(`${response.statusText}`, `${errorResponse}`, true)
       } else {
         console.log(await response.json())
+        try {
+          const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password
+            })
+          })
+
+          const json = await response.json()
+          console.log(json)
+          setToken(json.token)
+          navigation.push('Home')
+        } catch (err) {
+          console.log(err)
+        }
       }
     } catch (err) {
       console.log(err)
