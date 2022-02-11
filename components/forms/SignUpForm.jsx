@@ -62,6 +62,15 @@ export default function SignUpForm ({ navigation }) {
     } else if (formData.password.length < 6) {
       passedValidation = false
       setPasswordErrorReason('Password cannot be less than 6 characters')
+    } else if (!/[A-Z]/.test(formData.password)) {
+      passedValidation = false
+      setPasswordErrorReason('Password must contain a capital letter')
+    } else if (!/[_\W0-9]/.test(formData.password)) {
+      passedValidation = false
+      setPasswordErrorReason('Password must contain a special character')
+    } else if (!/\d/.test(formData.password)) {
+      passedValidation = false
+      setPasswordErrorReason('Password must contain a number')
     } else {
       setPasswordErrorReason('')
     }
@@ -73,7 +82,6 @@ export default function SignUpForm ({ navigation }) {
     } else {
       setConfirmPasswordErrorReason('')
     }
-
     return passedValidation
   }
 
@@ -96,7 +104,7 @@ export default function SignUpForm ({ navigation }) {
         body: JSON.stringify({
           first_name: formData.firstName,
           last_name: formData.surname,
-          email: formData.email,
+          email: formData.email.toLowerCase(),
           password: formData.password
         })
       })
@@ -107,7 +115,6 @@ export default function SignUpForm ({ navigation }) {
         setErrorAlertProps(`${response.statusText}`, `${errorResponse}`, true)
         setLoadingSpinnerVisible(false)
       } else {
-        console.log(await response.json())
         try {
           const response = await fetch('http://localhost:3333/api/1.0.0/login', {
             method: 'POST',
@@ -122,7 +129,6 @@ export default function SignUpForm ({ navigation }) {
           })
 
           const json = await response.json()
-          console.log(json)
           setToken(json.token)
           setLoadingSpinnerVisible(false)
           navigation.push('Home')

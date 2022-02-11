@@ -80,10 +80,42 @@ export default function LoginForm ({ navigation }) {
     }
   }
 
+  const bypass = async () => {
+    setLoadingSpinnerVisible(true)
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: 'tom.keeley@mmu.com',
+          password: 'testing'
+        })
+      })
+
+      if (response.status === 400) {
+        setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
+        setLoadingSpinnerVisible(false)
+      } else {
+        const json = await response.json()
+        console.log(json)
+        setToken(json.token)
+        setLoadingSpinnerVisible(false)
+        navigation.push('Home')
+      }
+    } catch (err) {
+      console.log(err)
+      setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
+    }
+  }
+
   return (
     <View w="100%" h='100%'>
       {loadingSpinnerVisible && <LoadingSpinner />}
       {errorAlertVisible && <ErrorPopup />}
+      <Button onPress={bypass}>Bypass</Button>
       <Box bg="title.bg" h='100%' w="100%">
         <Center w={'100%'} h={'90%'} bg="title.bg">
           <Box safeArea w="90%" bg="white" p='5'>
