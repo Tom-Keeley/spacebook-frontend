@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
@@ -10,7 +10,7 @@ export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
-  const { setToken, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
+  const { setToken, setUserId, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
 
   const validateLoginDetails = () => {
     let passedValidation = true
@@ -71,6 +71,7 @@ export default function LoginForm ({ navigation }) {
         const json = await response.json()
         console.log(json)
         setToken(json.token)
+        setUserId(json.id)
         setLoadingSpinnerVisible(false)
         navigation.push('Home')
       }
@@ -102,6 +103,7 @@ export default function LoginForm ({ navigation }) {
         const json = await response.json()
         console.log(json)
         setToken(json.token)
+        setUserId(json.id)
         setLoadingSpinnerVisible(false)
         navigation.push('Home')
       }
@@ -111,11 +113,14 @@ export default function LoginForm ({ navigation }) {
     }
   }
 
+  useEffect(() => {
+    bypass()
+  }, [])
+
   return (
     <View w="100%" h='100%'>
       {loadingSpinnerVisible && <LoadingSpinner />}
       {errorAlertVisible && <ErrorPopup />}
-      <Button onPress={bypass}>Bypass</Button>
       <Box bg="title.bg" h='100%' w="100%">
         <Center w={'100%'} h={'90%'} bg="title.bg">
           <Box safeArea w="90%" bg="white" p='5'>
