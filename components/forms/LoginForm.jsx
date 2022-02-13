@@ -64,16 +64,24 @@ export default function LoginForm ({ navigation }) {
         })
       })
 
-      if (response.status === 400) {
-        setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
-        setLoadingSpinnerVisible(false)
-      } else {
-        const json = await response.json()
-        console.log(json)
-        setToken(json.token)
-        setUserId(json.id)
-        setLoadingSpinnerVisible(false)
-        navigation.push('Home')
+      switch (response.status) {
+        case 200: {
+          const json = await response.json()
+          setToken(json.token)
+          setUserId(json.id)
+          setLoadingSpinnerVisible(false)
+          navigation.push('Home')
+          break
+        }
+        case 400: {
+          setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
+          setLoadingSpinnerVisible(false)
+          break
+        }
+        case 500: {
+          setErrorAlertProps('Server error', 'Failed to sign in please try again', true)
+          break
+        }
       }
     } catch (err) {
       console.log(err)
@@ -92,23 +100,32 @@ export default function LoginForm ({ navigation }) {
         },
         body: JSON.stringify({
           email: 'tom.keeley@mmu.com',
-          password: 'testing'
+          password: 'Ballons1%'
         })
       })
 
-      if (response.status === 400) {
-        setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
-        setLoadingSpinnerVisible(false)
-      } else {
-        const json = await response.json()
-        console.log(json)
-        setToken(json.token)
-        setUserId(json.id)
-        setLoadingSpinnerVisible(false)
-        navigation.push('Home')
+      switch (response.status) {
+        case 200: {
+          const json = await response.json()
+          setToken(json.token)
+          setUserId(json.id)
+          setLoadingSpinnerVisible(false)
+          navigation.push('Home')
+          break
+        }
+        case 400: {
+          setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
+          setLoadingSpinnerVisible(false)
+          break
+        }
+        case 500: {
+          setErrorAlertProps('Server error', 'Failed to sign in please try again', true)
+          break
+        }
       }
     } catch (err) {
       console.log(err)
+      setLoadingSpinnerVisible(false)
       setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
     }
   }

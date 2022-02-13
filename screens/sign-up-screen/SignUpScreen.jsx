@@ -2,12 +2,12 @@ import React from 'react'
 import { extendTheme, NativeBaseProvider } from 'native-base'
 
 // Custom imports
-import SignUpForm from '../../components/forms/SignUpForm'
+import SignUpForm from '../../components/forms/UserForm'
 
 export default function SignUpScreen ({ navigation }) {
   return (
     <NativeBaseProvider theme={theme}>
-      <SignUpForm navigation={navigation} />
+      <SignUpForm type="signup" navigation={navigation} />
     </NativeBaseProvider>
   )
 }

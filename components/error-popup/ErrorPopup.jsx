@@ -5,9 +5,12 @@ import { Center, AlertDialog, Button } from 'native-base'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ErrorPopup () {
-  const { errorAlertVisible, setErrorAlertVisible, errorAlertTitle, errorAlertMessage } = useContext(SpaceBookContext)
+  const { errorAlertVisible, setErrorAlertVisible, errorAlertTitle, errorAlertMessage, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
 
-  const onClose = () => setErrorAlertVisible(false)
+  const onClose = () => {
+    setErrorAlertVisible(false)
+    setLoadingSpinnerVisible(false)
+  }
   const cancelRef = useRef(null)
 
   return (
