@@ -2,8 +2,6 @@ import React from 'react'
 import { extendTheme, NativeBaseProvider } from 'native-base'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-// ContextAPI
-
 // Custom imports
 import ProfileScreen from '../profile-screen/ProfileScreen'
 import FriendsScreen from '../friends-screen/FriendsScreen'

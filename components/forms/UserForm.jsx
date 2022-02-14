@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
+import propTypes from 'prop-types'
 
 // Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import ErrorPopup from '../error-popup/ErrorPopup'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 
-export default function SignUpForm ({ type, navigation, firstName, lastName, email }) {
+export default function UserForm ({ type, navigation, firstName, lastName, email }) {
   const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
@@ -102,7 +103,8 @@ export default function SignUpForm ({ type, navigation, firstName, lastName, ema
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Authorisation': token
         },
         body: JSON.stringify({
           first_name: formData.firstName,
@@ -280,3 +282,21 @@ const theme = extendTheme({
     }
   }
 })
+
+UserForm.propTypes = {
+  type: propTypes.string.isRequired,
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired,
+    push: propTypes.func.isRequired,
+    goBack: propTypes.func.isRequired
+  }).isRequired,
+  firstName: propTypes.string,
+  lastName: propTypes.string,
+  email: propTypes.string
+}
+
+UserForm.defaultProps = {
+  firstName: '',
+  lastName: '',
+  email: ''
+}

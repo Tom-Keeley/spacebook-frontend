@@ -1,13 +1,14 @@
 import React from 'react'
 import { extendTheme, NativeBaseProvider } from 'native-base'
+import PropTypes from 'prop-types'
 
 // Custom imports
-import SignUpForm from '../../components/forms/UserForm'
+import UserForm from '../../components/forms/UserForm'
 
 export default function SignUpScreen ({ navigation }) {
   return (
     <NativeBaseProvider theme={theme}>
-      <SignUpForm type="signup" navigation={navigation} />
+      <UserForm type="signup" navigation={navigation} />
     </NativeBaseProvider>
   )
 }
@@ -19,3 +20,8 @@ const theme = extendTheme({
     }
   }
 })
+SignUpScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired
+}

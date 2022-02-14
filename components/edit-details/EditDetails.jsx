@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Modal, Button, View } from 'native-base'
+import propTypes from 'prop-types'
 
 // Custom Import
-import SignUpForm from '../forms/UserForm'
+import UserForm from '../forms/UserForm'
 
-export default function EditDetails ({ firstName, lastName, email }) {
+export default function EditDetails ({ firstName, lastName, email, navigation }) {
   const [showModal, setShowModal] = useState(false)
 
   return (
@@ -14,9 +15,18 @@ export default function EditDetails ({ firstName, lastName, email }) {
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
           <Modal.Header>Edit Details</Modal.Header>
-          <SignUpForm type="edit" firstName={firstName} lastName={lastName} email={email} />
+          <UserForm type="edit" navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
         </Modal.Content>
       </Modal>
     </View>
   )
+}
+
+EditDetails.propTypes = {
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired
+  }),
+  firstName: propTypes.string.isRequired,
+  lastName: propTypes.string.isRequired,
+  email: propTypes.string.isRequired
 }

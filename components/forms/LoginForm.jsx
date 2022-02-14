@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
 import { SpaceBookContext } from '../../context/SpacebookContext'
+import propTypes from 'prop-types'
 
 // Import custom
 import ErrorPopup from '../error-popup/ErrorPopup'
@@ -176,4 +177,11 @@ export default function LoginForm ({ navigation }) {
       </Box>
     </View>
   )
+}
+
+LoginForm.propTypes = {
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired,
+    push: propTypes.func.isRequired
+  }).isRequired
 }

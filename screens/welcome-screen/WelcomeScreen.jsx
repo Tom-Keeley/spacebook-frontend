@@ -1,5 +1,6 @@
 import React from 'react'
 import { extendTheme, NativeBaseProvider, Center, Text } from 'native-base'
+import propTypes from 'prop-types'
 
 // Custom  imports
 import LoginForm from '../../components/forms/LoginForm'
@@ -22,3 +23,9 @@ const theme = extendTheme({
     }
   }
 })
+
+WelcomeScreen.propTypes = {
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired
+  }).isRequired
+}
