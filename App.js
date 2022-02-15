@@ -16,7 +16,7 @@ export default function App () {
   return (
     <SpaceBookContextProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Welcome' screenOptions={{ headerShown: false }}>
+        <Stack.Navigator name="Welcome-screen" initialRouteName='Welcome' screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Sign Up" component={SignUpScreen}/>
           <Stack.Screen name="Home" component={HomeScreen}/>

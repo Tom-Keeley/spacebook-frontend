@@ -182,6 +182,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
           break
         case 500:
           setErrorAlertProps('Server Error', 'Server Error please try again later', false)
+          break
       }
     } catch (err) {
       console.log(err)
