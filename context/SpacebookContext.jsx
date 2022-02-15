@@ -23,6 +23,9 @@ export default function SpaceBookContextProvider ({ children }) {
   // UserForm modal
   const [formModalVisible, setFormModalVisible] = useState(false)
 
+  // Pagination
+  const [pagination, setPagination] = useState('5')
+
   const setErrorAlertProps = (alertTitle, alertMessage, alertVisible) => {
     setErrorAlertTitle(alertTitle)
     setErrorAlertMessage(alertMessage)
@@ -44,6 +47,8 @@ export default function SpaceBookContextProvider ({ children }) {
       setToken,
       userId,
       setUserId,
+      pagination,
+      setPagination,
       firstName,
       setFirstName,
       lastName,
