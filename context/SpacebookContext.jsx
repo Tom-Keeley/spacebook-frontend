@@ -1,8 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react'
+import propTypes from 'prop-types'
 
 export const SpaceBookContext = createContext()
 
-export default function SpaceBookContextProvider ({children}) {
+export default function SpaceBookContextProvider ({ children }) {
   // User Details
   const [token, setToken] = useState('')
   const [userId, setUserId] = useState(0)
@@ -64,4 +65,8 @@ export default function SpaceBookContextProvider ({children}) {
       {children}
     </SpaceBookContext.Provider>
   )
+}
+
+SpaceBookContextProvider.propTypes = {
+  children: propTypes.any.isRequired
 }
