@@ -10,21 +10,43 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ navigation }) {
   const toast = useToast()
-  const { token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
+  const { setErrorAlertProps, token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
   // Runs on mount to get and set user details
   useEffect(async () => {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Authorization': token
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        }
+      })
+      switch (response.status) {
+        case (200): {
+          const json = await response.json()
+          setFirstName(json.first_name)
+          setLastName(json.last_name)
+          setEmail(json.email)
+          break
+        }
+        case (401): {
+          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+          break
+        }
+        case (404): {
+          setErrorAlertProps('User not found', 'User not found please try again', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Server occured please try again', true)
+          break
+        }
       }
-    })
-    const json = await response.json()
-    setFirstName(json.first_name)
-    setLastName(json.last_name)
-    setEmail(json.email)
+    } catch (err) {
+      console.log(err)
+      setErrorAlertProps('Error', 'An error occured please try again later', true)
+    }
   }, [])
 
   useEffect(() => {
