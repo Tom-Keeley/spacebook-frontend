@@ -1,17 +1,21 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import { Modal, Button, View } from 'native-base'
 import propTypes from 'prop-types'
+
+// Context API
+import { SpaceBookContext } from '../../context/SpacebookContext'
 
 // Custom Import
 import UserForm from '../forms/UserForm'
 
 export default function EditDetails ({ firstName, lastName, email, navigation }) {
-  const [showModal, setShowModal] = useState(false)
+  const { formModalVisible, setFormModalVisible } = useContext(SpaceBookContext)
 
   return (
     <View>
-      <Button onPress={() => { setShowModal(true) }}>Edit Details</Button>
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+      <Button onPress={() => { setFormModalVisible(true) }}>Edit Details</Button>
+      <Modal isOpen={formModalVisible
+      } onClose={() => setFormModalVisible(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
           <Modal.Header>Edit Details</Modal.Header>

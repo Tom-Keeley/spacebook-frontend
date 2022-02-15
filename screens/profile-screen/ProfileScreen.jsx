@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Avatar, VStack, Text, Center, Box, HStack } from 'native-base'
+import { Avatar, VStack, Text, Center, Box, HStack, useToast } from 'native-base'
 import propTypes from 'prop-types'
 
 // Custom imports
@@ -9,7 +9,8 @@ import EditDetails from '../../components/edit-details/EditDetails'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ navigation }) {
-  const { token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail } = useContext(SpaceBookContext)
+  const toast = useToast()
+  const { token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
   // Runs on mount to get and set user details
   useEffect(async () => {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
@@ -25,6 +26,17 @@ export default function ProfileScreen ({ navigation }) {
     setLastName(json.last_name)
     setEmail(json.email)
   }, [])
+
+  useEffect(() => {
+    if (userDetailsUpdated === true) {
+      toast.show({
+        title: 'Details Updated',
+        status: 'success',
+        placement: 'top'
+      })
+    }
+    setUserDetailsUpdated(false)
+  }, [userDetailsUpdated])
 
   return (
     <Center w={'100%'} h={'100%'}>

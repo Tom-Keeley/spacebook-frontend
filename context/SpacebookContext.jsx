@@ -9,6 +9,7 @@ export default function SpaceBookContextProvider ({children}) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [userDetailsUpdated, setUserDetailsUpdated] = useState(false)
 
   // Loading Spinner
   const [loadingSpinnerVisible, setLoadingSpinnerVisible] = useState(false)
@@ -17,6 +18,9 @@ export default function SpaceBookContextProvider ({children}) {
   const [errorAlertVisible, setErrorAlertVisible] = useState(false)
   const [errorAlertTitle, setErrorAlertTitle] = useState('')
   const [errorAlertMessage, setErrorAlertMessage] = useState('')
+
+  // UserForm modal
+  const [formModalVisible, setFormModalVisible] = useState(false)
 
   const setErrorAlertProps = (alertTitle, alertMessage, alertVisible) => {
     setErrorAlertTitle(alertTitle)
@@ -45,13 +49,17 @@ export default function SpaceBookContextProvider ({children}) {
       setLastName,
       email,
       setEmail,
+      userDetailsUpdated,
+      setUserDetailsUpdated,
       errorAlertVisible,
       setErrorAlertVisible,
       loadingSpinnerVisible,
       setLoadingSpinnerVisible,
       errorAlertMessage,
       errorAlertTitle,
-      setErrorAlertProps
+      setErrorAlertProps,
+      formModalVisible,
+      setFormModalVisible
     }}>
       {children}
     </SpaceBookContext.Provider>

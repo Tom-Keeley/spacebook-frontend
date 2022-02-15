@@ -9,13 +9,14 @@ import ErrorPopup from '../error-popup/ErrorPopup'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 
 export default function UserForm ({ type, navigation, firstName, lastName, email }) {
-  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId } = useContext(SpaceBookContext)
+  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId, setUserId, setFormModalVisible, setUserDetailsUpdated } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [lastNameErrorReason, setLastNameErrorReason] = useState('')
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
   const [confirmPasswordErrorReason, setConfirmPasswordErrorReason] = useState('')
+  // const toast = useToast()
 
   const validateDetails = () => {
     let passedValidation = true
@@ -103,8 +104,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorisation': token
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           first_name: formData.firstName,
@@ -114,35 +114,52 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
         })
       })
 
-      if (response.status === 400) {
-        const errorReason = await response.text()
-        const errorResponse = errorReason.includes('duplicate') ? 'Account already exists with this email' : 'Failed to sign up please try again'
-        setErrorAlertProps(`${response.statusText}`, `${errorResponse}`, true)
-        setLoadingSpinnerVisible(false)
-      } else {
-        try {
-          const response = await fetch('http://localhost:3333/api/1.0.0/login', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email: formData.email,
-              password: formData.password
+      switch (response.status) {
+        case (201): {
+          try {
+            const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: formData.email,
+                password: formData.password
+              })
             })
-          })
-
-          const json = await response.json()
-          setToken(json.token)
-          setLoadingSpinnerVisible(false)
-          navigation.push('Home')
-        } catch (err) {
-          console.log(err)
+            const json = await response.json()
+            switch (response.status) {
+              case (200): {
+                setToken(json.token)
+                setUserId(json.id)
+                setLoadingSpinnerVisible(false)
+                navigation.push('Home')
+                break
+              }
+              case (400): {
+                setErrorAlertProps('Invalid login details', 'Unable to log in please try again', true)
+                break
+              }
+              case (500): {
+                setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+                break
+              }
+            }
+          } catch (err) {
+            setErrorAlertProps('Error', 'Error occured please try again', true)
+          }
+          break
+        }
+        case (400): {
+          setErrorAlertProps('Bad Request', 'Unable to sign up please try again', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
         }
       }
     } catch (err) {
-      console.log(err)
       setErrorAlertProps(`${err.message}`, 'Failed to sign up please try again', true)
     }
   }
@@ -154,7 +171,8 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Authorization': token
         },
         body: JSON.stringify({
           first_name: formData.firstName,
@@ -167,6 +185,9 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
       switch (response.status) {
         case 200:
           console.log('success')
+          setUserDetailsUpdated(true)
+          setLoadingSpinnerVisible(false)
+          setFormModalVisible(false)
           break
         case 400:
           setErrorAlertProps('Bad Request', 'Failed to edit details please try again', true)
@@ -185,7 +206,6 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
           break
       }
     } catch (err) {
-      console.log(err)
       setErrorAlertProps(`${err.message}`, 'Failed to edit details please try again', true)
     }
   }
