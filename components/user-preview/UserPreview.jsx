@@ -27,7 +27,7 @@ export default function UserPreview ({ id, firstName, lastName }) {
 }
 
 UserPreview.propTypes = {
-  id: propTypes.string.isRequired,
+  id: propTypes.number.isRequired,
   firstName: propTypes.string.isRequired,
   lastName: propTypes.string.isRequired
 }
