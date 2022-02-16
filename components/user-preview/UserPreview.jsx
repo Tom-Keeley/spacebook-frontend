@@ -15,7 +15,7 @@ export default function UserPreview ({ id, firstName, lastName }) {
               <HStack>
                 <Flex direction='row'>
                   <Button variant={'ghost'}>Add Friend</Button>
-                  <Button variant={'ghost'}>See Friends</Button>
+                  <Button variant={'ghost'}>View Profile</Button>
                 </Flex>
               </HStack>
             </Center>
