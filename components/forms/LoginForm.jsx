@@ -100,8 +100,8 @@ export default function LoginForm ({ navigation }) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: 'tom.keeley@mmu.com',
-          password: 'Ballons1%'
+          email: 'postman@mmu.ac.uk',
+          password: 'Testing1%'
         })
       })
 

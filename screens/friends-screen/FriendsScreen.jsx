@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { VStack, HStack, Flex, Input, Icon, Box, Radio, ScrollView, Spacer, Center } from 'native-base'
+import { VStack, HStack, Input, Icon, Box, Radio, ScrollView } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 
 // Context API
@@ -7,14 +7,87 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 
 // Custom imports
 import SearchOptions from '../../components/search-options/SearchOptions'
-import UserPreview from '../../components/user-preview/UserPreview'
+import UserCard from '../../components/user-card/UserCard'
 
 // https://editor.swagger.io/search?q=Ash%20Williams&limit=20&offset=0
 
 export default function FriendsScreen () {
-  const [checkBoxValue, setCheckBoxValue] = useState('find-friends')
-  const { pagination, token } = useContext(SpaceBookContext)
+  const [radioValue, setRadioValue] = useState('find-friends')
+  const { pagination, token, userId, setErrorAlertProps } = useContext(SpaceBookContext)
+
+  // State values for friend related data
   const [users, setUsers] = useState([])
+  const [friends, setFriends] = useState([])
+  const [friendRequests, setFriendRequests] = useState([])
+
+  // Get data when page loads
+  useEffect(async () => {
+    try {
+      const friendsResponse = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/friends`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        }
+      })
+
+      switch (friendsResponse.status) {
+        case (200): {
+          setFriends(await friendsResponse.json())
+          break
+        }
+        case (401): {
+          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+          break
+        }
+        case (403): {
+          setErrorAlertProps('Error', 'Can only view the friends of yourself or your friends', true)
+          break
+        }
+        case (404): {
+          setErrorAlertProps('Not Found', 'User not found please try again', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Sever error occured please try again later', true)
+          break
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      setErrorAlertProps('Error', 'An error occured please try again later', true)
+    }
+
+    try {
+      const friendRequestResponse = await fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        }
+      })
+
+      switch (friendRequestResponse.status) {
+        case (200): {
+          setFriendRequests(await friendRequestResponse.json())
+          break
+        }
+        case (401): {
+          setErrorAlertProps('Unauthorised', 'You are not authorised to do this action please log in', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Server error occured please try again', true)
+          break
+        }
+      }
+    } catch (err) {
+      console.log(err)
+      setErrorAlertProps('Error', 'Error occured please try again later', true)
+    }
+  }, [])
 
   useEffect(async () => {
     try {
@@ -26,26 +99,60 @@ export default function FriendsScreen () {
           'X-Authorization': token
         }
       })
-      setUsers(await response.json())
+      switch (response.status) {
+        case (200): {
+          setUsers(await response.json())
+          break
+        }
+        case (401): {
+          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+          break
+        }
+      }
     } catch (err) {
       console.log(err)
+      setErrorAlertProps('Error', 'Error occured please try again later', true)
     }
-  }, [])
+  }, [pagination])
 
   useEffect(() => {
     console.log(users)
-  }, [users])
+    console.log(friendRequests)
+    console.log(friends)
+  }, [users, friendRequests, friends])
+
+  const returnData = () => {
+    if (radioValue === 'find-friends') {
+      return (
+        users.map(user => {
+          return (
+            <UserCard type='find' key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} />
+          )
+        }))
+    } else if (radioValue === 'friend-requests') {
+      return (
+        friendRequests.map(request => {
+          return (
+            <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} />
+          )
+        }))
+    }
+  }
 
   return (
     <Box safeArea w={'100%'} h={'100%'}>
       <VStack p='5'>
         <Box bg={'white'} py={'2'} px={'3'} m={'1'} borderRadius={'5'} shadow={'5'}>
           <HStack>
-            <Input placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />}/>
+            <Input placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
             <SearchOptions />
           </HStack>
         </Box>
-        <Radio.Group m='2' value={checkBoxValue} onChange={nextValue => { setCheckBoxValue(nextValue) }} name='friendsGroup' accessibilityLabel='Selct your friends or search for a friend'>
+        <Radio.Group m='2' value={radioValue} onChange={nextValue => { setRadioValue(nextValue) }} name='friendsGroup' accessibilityLabel='Selct your friends or search for a friend'>
           <HStack space={4}>
             <Box>
               <Radio value='find-friends' my={1} size="sm">
@@ -65,11 +172,7 @@ export default function FriendsScreen () {
           </HStack>
         </Radio.Group>
         <ScrollView h={'650'}>
-          {users.map(user => {
-            return (
-              <UserPreview key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} />
-            )
-          })}
+          {returnData()}
         </ScrollView>
       </VStack>
     </Box>
