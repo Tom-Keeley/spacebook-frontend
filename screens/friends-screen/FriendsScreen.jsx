@@ -140,6 +140,13 @@ export default function FriendsScreen () {
             <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} />
           )
         }))
+    } else if (radioValue === 'friends') {
+      return (
+        friends.map(friend => {
+          return (
+            <UserCard type='friend' key={friend.user_id} id={friend.user_id} firstName={friend.user_givenname} lastName={friend.user_familyname} />
+          )
+        }))
     }
   }
 

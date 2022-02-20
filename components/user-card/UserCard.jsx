@@ -12,7 +12,7 @@ export default function UserCard ({ type, id, firstName, lastName }) {
   const { token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
   const toast = useToast()
 
-  const sendFriendRequest = async ({ type }) => {
+  const sendFriendRequest = async () => {
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
         method: 'POST',
@@ -55,6 +55,74 @@ export default function UserCard ({ type, id, firstName, lastName }) {
     }
   }
 
+  const acceptFriendRequest = async () => {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        console.log('Friend added')
+        toast.show({
+          title: `Added ${firstName} ${lastName} as a friend`,
+          status: 'success',
+          placement: 'top'
+        })
+        break
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        break
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        break
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+      }
+    }
+  }
+
+  const rejectFriendRequest = async () => {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        console.log('Friend rejected')
+        toast.show({
+          title: `Declined ${firstName} ${lastName}'s friend request`,
+          status: 'success',
+          placement: 'top'
+        })
+        break
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        break
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        break
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+      }
+    }
+  }
+
   const returnButtons = () => {
     if (type === 'find') {
       return (
@@ -66,8 +134,14 @@ export default function UserCard ({ type, id, firstName, lastName }) {
     } else if (type === 'request') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'}>Accept</Button>
-          <Button variant={'ghost'}>Reject</Button>
+          <Button variant={'ghost'} onPress={acceptFriendRequest}>Accept</Button>
+          <Button variant={'ghost'} onPress={rejectFriendRequest}>Reject</Button>
+        </Flex>
+      )
+    } else if (type === 'friend') {
+      return (
+        <Flex direction='row'>
+          <Button variant={'ghost'}>View Profile</Button>
         </Flex>
       )
     }
@@ -95,6 +169,7 @@ export default function UserCard ({ type, id, firstName, lastName }) {
 }
 
 UserCard.propTypes = {
+  type: propTypes.string.isRequired,
   id: propTypes.number.isRequired,
   firstName: propTypes.string.isRequired,
   lastName: propTypes.string.isRequired
