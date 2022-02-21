@@ -24,7 +24,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
       })
 
       switch (response.status) {
-        case (200): {
+        case (201): {
           console.log('success')
           toast.show({
             title: 'Friend request sent',
