@@ -5,11 +5,8 @@ import propTypes from 'prop-types'
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
-// Custom imports
-import ErrorPopup from '../error-popup/ErrorPopup'
-
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests }) {
-  const { token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
@@ -158,7 +155,6 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
 
   return (
     <Box bg={'white'} pt={'2'} m={'2'} borderRadius={'5'} shadow={'5'}>
-      {errorAlertVisible && <ErrorPopup />}
       <HStack>
         <Box w={'100%'}>
           <Box>

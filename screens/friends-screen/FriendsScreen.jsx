@@ -8,12 +8,13 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 // Custom imports
 import SearchOptions from '../../components/search-options/SearchOptions'
 import UserCard from '../../components/user-card/UserCard'
+import ErrorPopup from '../../components/error-popup/ErrorPopup'
 
 // https://editor.swagger.io/search?q=Ash%20Williams&limit=20&offset=0
 
 export default function FriendsScreen () {
   const [radioValue, setRadioValue] = useState('find-friends')
-  const { pagination, token, userId, setErrorAlertProps } = useContext(SpaceBookContext)
+  const { pagination, token, userId, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
   // State values for friend related data
   const [users, setUsers] = useState([])
@@ -152,6 +153,7 @@ export default function FriendsScreen () {
 
   return (
     <Box safeArea w={'100%'} h={'100%'}>
+      {errorAlertVisible && <ErrorPopup />}
       <VStack p='5'>
         <Box bg={'white'} py={'2'} px={'3'} m={'1'} borderRadius={'5'} shadow={'5'}>
           <HStack>
