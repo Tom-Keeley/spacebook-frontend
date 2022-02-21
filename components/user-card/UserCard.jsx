@@ -8,7 +8,7 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 // Custom imports
 import ErrorPopup from '../error-popup/ErrorPopup'
 
-export default function UserCard ({ type, id, firstName, lastName }) {
+export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests }) {
   const { token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
   const toast = useToast()
 
@@ -67,12 +67,12 @@ export default function UserCard ({ type, id, firstName, lastName }) {
 
     switch (response.status) {
       case (200): {
-        console.log('Friend added')
         toast.show({
           title: `Added ${firstName} ${lastName} as a friend`,
           status: 'success',
           placement: 'top'
         })
+        removeRequestFromState()
         break
       }
       case (401): {
@@ -101,12 +101,12 @@ export default function UserCard ({ type, id, firstName, lastName }) {
 
     switch (response.status) {
       case (200): {
-        console.log('Friend rejected')
         toast.show({
           title: `Declined ${firstName} ${lastName}'s friend request`,
           status: 'success',
           placement: 'top'
         })
+        removeRequestFromState()
         break
       }
       case (401): {
@@ -121,6 +121,13 @@ export default function UserCard ({ type, id, firstName, lastName }) {
         setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
       }
     }
+  }
+
+  const removeRequestFromState = () => {
+    const index = friendRequests.findIndex(request => request.user_id === id)
+    const tempArray = [...friendRequests]
+    tempArray.splice(index, 1)
+    setFriendRequests(tempArray)
   }
 
   const returnButtons = () => {
@@ -172,5 +179,12 @@ UserCard.propTypes = {
   type: propTypes.string.isRequired,
   id: propTypes.number.isRequired,
   firstName: propTypes.string.isRequired,
-  lastName: propTypes.string.isRequired
+  lastName: propTypes.string.isRequired,
+  friendRequests: propTypes.array.isRequired,
+  setFriendRequests: propTypes.func.isRequired
+}
+
+UserCard.defaultProps = {
+  friendRequests: [],
+  setFriendRequests: () => {}
 }
