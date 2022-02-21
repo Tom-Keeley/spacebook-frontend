@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Box, Text, Button, HStack, Flex, Center, useToast } from 'native-base'
 import propTypes from 'prop-types'
 
@@ -10,6 +10,7 @@ import ErrorPopup from '../error-popup/ErrorPopup'
 
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests }) {
   const { token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
+  const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
   const sendFriendRequest = async () => {
@@ -26,6 +27,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
       switch (response.status) {
         case (201): {
           console.log('success')
+          setButtonDisabled(true)
           toast.show({
             title: 'Friend request sent',
             status: 'success',
@@ -134,8 +136,8 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     if (type === 'find') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'} onPress={sendFriendRequest}>Add Friend</Button>
-          <Button variant={'ghost'}>View Profile</Button>
+          <Button variant={'ghost'} disabled={buttonDisabled} onPress={sendFriendRequest}><Text color={buttonDisabled === false ? 'primary.500' : 'white'}>Add Friend</Text></Button>
+          <Button variant={'ghost'}><Text color={'primary.500'}>View Profile</Text></Button>
         </Flex>
       )
     } else if (type === 'request') {
