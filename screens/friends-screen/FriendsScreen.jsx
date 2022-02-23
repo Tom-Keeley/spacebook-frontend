@@ -10,16 +10,15 @@ import SearchOptions from '../../components/search-options/SearchOptions'
 import UserCard from '../../components/user-card/UserCard'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
 
-// https://editor.swagger.io/search?q=Ash%20Williams&limit=20&offset=0
-
 export default function FriendsScreen () {
   const [radioValue, setRadioValue] = useState('find-friends')
   const { pagination, token, userId, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
-  // State values for friend related data
+  // State values for this component
   const [users, setUsers] = useState([])
   const [friends, setFriends] = useState([])
   const [friendRequests, setFriendRequests] = useState([])
+  const [friendRequestsBackup, setFriendRequestsBackup] = useState([])
 
   // Get data when page loads
   useEffect(async () => {
@@ -123,6 +122,7 @@ export default function FriendsScreen () {
   useEffect(() => {
     console.log(users)
     console.log(friendRequests)
+    console.log('friends')
     console.log(friends)
   }, [users, friendRequests, friends])
 
@@ -151,13 +151,100 @@ export default function FriendsScreen () {
     }
   }
 
+  const searchData = async (searchValue) => {
+    if (radioValue === 'find-friends') {
+      try {
+        const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchValue}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Authorization': token
+          }
+        })
+        switch (response.status) {
+          case (200): {
+            setUsers(await response.json())
+            break
+          }
+          case (401): {
+            setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+            break
+          }
+          case (500): {
+            setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+            break
+          }
+        }
+      } catch (err) {
+        setErrorAlertProps('Error', 'An error occured please try again later', true)
+        console.log(err)
+      }
+    } else if (radioValue === 'friends') {
+      if (searchValue.length > 0) {
+        try {
+          const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchValue}&searchin=friends`, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-Authorization': token
+            }
+          })
+          switch (await response.status) {
+            case (200): {
+              console.log(response.json())
+              break
+            }
+            case (401): {
+              setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+              break
+            }
+            case (500): {
+              setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+              break
+            }
+          }
+        } catch (err) {
+          setErrorAlertProps('Error', 'An error occured please try again later', true)
+          console.log(err)
+        }
+      }
+    } else if (radioValue === 'friend-requests') {
+      if (friendRequestsBackup.length === 0) {
+        setFriendRequestsBackup(friendRequests)
+      }
+
+      if (searchValue.length > 0) {
+        console.log('here')
+        const tempArray = []
+        const rg = new RegExp('.{1,' + searchValue.length + '}', 'g')
+
+        friendRequests.forEach(friendRequest => {
+          console.log(friendRequest)
+          const searchValueSplit = searchValue.match(rg)
+          const compareValue = (friendRequest.first_name + ' ' + friendRequest.last_name).match(rg)
+          searchValueSplit.forEach((string, index) => {
+            if (string === compareValue[index]) {
+              tempArray.push(friendRequest)
+            }
+          })
+        })
+        console.log(tempArray)
+        setFriendRequests(tempArray)
+      } else if (searchValue.length === 0) {
+        setFriendRequests(friendRequestsBackup)
+      }
+    }
+  }
+
   return (
     <Box safeArea w={'100%'} h={'100%'}>
       {errorAlertVisible && <ErrorPopup />}
       <VStack p='5'>
         <Box bg={'white'} py={'2'} px={'3'} m={'1'} borderRadius={'5'} shadow={'5'}>
           <HStack>
-            <Input placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
+            <Input onChangeText={value => searchData(value)} placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
             <SearchOptions />
           </HStack>
         </Box>
