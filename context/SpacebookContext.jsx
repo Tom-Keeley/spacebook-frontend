@@ -24,7 +24,7 @@ export default function SpaceBookContextProvider ({ children }) {
   const [formModalVisible, setFormModalVisible] = useState(false)
 
   // Pagination
-  const [pagination, setPagination] = useState('5')
+  const [pagination, setPagination] = useState(5)
 
   const setErrorAlertProps = (alertTitle, alertMessage, alertVisible) => {
     setErrorAlertTitle(alertTitle)

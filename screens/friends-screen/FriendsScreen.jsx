@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { VStack, HStack, Input, Icon, Box, Radio, ScrollView } from 'native-base'
+import { VStack, HStack, Input, Icon, Box, Radio, ScrollView, Button, Text, Center } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 
 // Context API
@@ -11,10 +11,10 @@ import UserCard from '../../components/user-card/UserCard'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
 
 export default function FriendsScreen () {
-  const [radioValue, setRadioValue] = useState('find-friends')
   const { pagination, token, userId, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
   // State values for this component
+  const [radioValue, setRadioValue] = useState('find-friends')
   const [users, setUsers] = useState([])
   const [friends, setFriends] = useState([])
   const [friendRequests, setFriendRequests] = useState([])
@@ -89,6 +89,7 @@ export default function FriendsScreen () {
     }
   }, [])
 
+  // DO I NEED THE CONTENT TYPE IF IT DOSEN'T HAVE A BODT
   useEffect(async () => {
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/search?limit=${pagination}`, {
@@ -216,6 +217,7 @@ export default function FriendsScreen () {
       }
 
       if (searchValue.length > 0) {
+        // DO ANOTHER CALL TO THE DATABASE RATHER THAN FILTERING ITS EASIER!!
         console.log('here')
         const tempArray = []
         const rg = new RegExp('.{1,' + searchValue.length + '}', 'g')
@@ -245,7 +247,6 @@ export default function FriendsScreen () {
         <Box bg={'white'} py={'2'} px={'3'} m={'1'} borderRadius={'5'} shadow={'5'}>
           <HStack>
             <Input onChangeText={value => searchData(value)} placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
-            <SearchOptions />
           </HStack>
         </Box>
         <Radio.Group m='2' value={radioValue} onChange={nextValue => { setRadioValue(nextValue) }} name='friendsGroup' accessibilityLabel='Selct your friends or search for a friend'>
@@ -267,7 +268,8 @@ export default function FriendsScreen () {
             </Box>
           </HStack>
         </Radio.Group>
-        <ScrollView h={'650'}>
+        <SearchOptions />
+        <ScrollView h={'600'}>
           {returnData()}
         </ScrollView>
       </VStack>
