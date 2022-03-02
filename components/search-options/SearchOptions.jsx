@@ -18,7 +18,7 @@ export default function SearchOptions ({ changePage }) {
                   Pagination
               </Button>
       }}>
-        <Menu.OptionGroup defaultValue={pagination} title="Pagination" type="radio" onChange={value => setPagination(Number(value))}>
+        <Menu.OptionGroup defaultValue={pagination.toString()} title="Pagination" type="radio" onChange={value => setPagination(Number(value))}>
           <Menu.ItemOption value="5">5</Menu.ItemOption>
           <Menu.ItemOption value="10">10</Menu.ItemOption>
           <Menu.ItemOption value="20">20</Menu.ItemOption>
