@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { VStack, HStack, Input, Icon, Box, Radio, ScrollView, Button, Text, Center } from 'native-base'
+import { VStack, HStack, Input, Icon, Box, Radio, ScrollView } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 
 // Context API
@@ -91,36 +91,7 @@ export default function FriendsScreen () {
     }
   }, [])
 
-  // DO I NEED THE CONTENT TYPE IF IT DOSEN'T HAVE A BODT
-  // useEffect(async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:3333/api/1.0.0/search?limit=${pagination}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //         'X-Authorization': token
-  //       }
-  //     })
-  //     switch (response.status) {
-  //       case (200): {
-  //         setUsers(await response.json())
-  //         break
-  //       }
-  //       case (401): {
-  //         setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-  //         break
-  //       }
-  //       case (500): {
-  //         setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-  //         break
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.log(err)
-  //     setErrorAlertProps('Error', 'Error occured please try again later', true)
-  //   }
-  // }, [pagination])
+  //DO I NEED THE CONTENT TYPE IF IT DOSEN'T HAVE A BODT
 
   useEffect(() => {
     console.log(users)
@@ -291,13 +262,15 @@ export default function FriendsScreen () {
     }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     getUsersOffset()
   }, [offset])
 
   useEffect(() => {
+    if (offset === 0) {
+      getUsersOffset()
+    }
     setOffset(0)
-    getUsersOffset()
   }, [pagination])
 
   return (

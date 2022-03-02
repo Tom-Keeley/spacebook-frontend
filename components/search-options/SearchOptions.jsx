@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import { Box, Button, Menu, HStack, VStack, Center, ChevronLeftIcon, ChevronRightIcon } from 'native-base'
+import { Button, Menu, HStack, ChevronLeftIcon, ChevronRightIcon } from 'native-base'
 
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
+import propTypes from 'prop-types'
 
 export default function SearchOptions ({ changePage }) {
   const { pagination, setPagination } = useContext(SpaceBookContext)
@@ -27,4 +28,8 @@ export default function SearchOptions ({ changePage }) {
       </Menu>
     </HStack>
   )
+}
+
+SearchOptions.propTypes = {
+  changePage: propTypes.func.isRequired
 }
