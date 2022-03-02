@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { VStack, HStack, Input, Icon, Box, Radio, ScrollView } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
+import propTypes from 'prop-types'
 
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
@@ -10,7 +11,7 @@ import SearchOptions from '../../components/search-options/SearchOptions'
 import UserCard from '../../components/user-card/UserCard'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
 
-export default function FriendsScreen () {
+export default function FriendsScreen ({ navigation }) {
   const { pagination, token, userId, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
   // State values for this component
@@ -236,21 +237,21 @@ export default function FriendsScreen () {
       return (
         users.map(user => {
           return (
-            <UserCard type='find' key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} />
+            <UserCard type='find' key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} navigation={navigation}/>
           )
         }))
     } else if (radioValue === 'friend-requests') {
       return (
         friendRequests.map(request => {
           return (
-            <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+            <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} friendRequests={friendRequests} setFriendRequests={setFriendRequests} navigation={navigation}/>
           )
         }))
     } else if (radioValue === 'friends') {
       return (
         friends.map(friend => {
           return (
-            <UserCard type='friend' key={friend.user_id} id={friend.user_id} firstName={friend.user_givenname} lastName={friend.user_familyname} />
+            <UserCard type='friend' key={friend.user_id} id={friend.user_id} firstName={friend.user_givenname} lastName={friend.user_familyname} navigation={navigation} />
           )
         }))
     }
@@ -299,4 +300,10 @@ export default function FriendsScreen () {
       </VStack>
     </Box>
   )
+}
+
+FriendsScreen.propTypes = {
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired
+  }).isRequired
 }

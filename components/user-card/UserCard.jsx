@@ -5,7 +5,7 @@ import propTypes from 'prop-types'
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
-export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests }) {
+export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests, navigation }) {
   const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
@@ -129,6 +129,10 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     setFriendRequests(tempArray)
   }
 
+  const viewProfile = () => {
+    navigation.navigate('Profile', { profileType: 'userProfile' })
+  }
+
   const returnButtons = () => {
     if (type === 'find') {
       return (
@@ -147,7 +151,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     } else if (type === 'friend') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'}>View Profile</Button>
+          <Button variant={'ghost'} onPress={viewProfile} >View Profile</Button>
         </Flex>
       )
     }
@@ -174,6 +178,9 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
 }
 
 UserCard.propTypes = {
+  navigation: propTypes.shape({
+    navigate: propTypes.func.isRequired
+  }).isRequired,
   type: propTypes.string.isRequired,
   id: propTypes.number.isRequired,
   firstName: propTypes.string.isRequired,

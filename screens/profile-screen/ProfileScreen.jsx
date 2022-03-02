@@ -13,7 +13,7 @@ import ErrorPopup from '../../components/error-popup/ErrorPopup'
 // ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
-export default function ProfileScreen ({ navigation }) {
+export default function ProfileScreen ({ route, navigation }) {
   const toast = useToast()
   const { setErrorAlertProps, errorAlertVisible, token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
   const [image, setImage] = useState(null)
@@ -21,6 +21,10 @@ export default function ProfileScreen ({ navigation }) {
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [showCameraModal, setShowCameraModal] = useState(false)
   let camera = Camera
+  const { profileType } = route.params
+  console.log(profileType)
+
+  // console.log(JSON.stringify(test))
 
   // Runs on mount to get and set user details
   useEffect(async () => {
@@ -272,5 +276,8 @@ export default function ProfileScreen ({ navigation }) {
 ProfileScreen.propTypes = {
   navigation: propTypes.shape({
     navigate: propTypes.func.isRequired
-  }).isRequired
+  }).isRequired,
+  route: propTypes.shape({
+    params: propTypes.object
+  })
 }

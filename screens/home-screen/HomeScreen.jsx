@@ -13,7 +13,7 @@ export default function HomeScreen () {
   return (
     <NativeBaseProvider theme={theme}>
       <Tab.Navigator initialRouteName='Profile' screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: () => (<Ionicons name='person' size={24} color='black' />) }}/>
+        <Tab.Screen name="Profile" component={ProfileScreen} initialParams={{ profileType: 'personal' }} options={{ tabBarIcon: () => (<Ionicons name='person' size={24} color='black' />) }}/>
         <Tab.Screen name="Friends" component={FriendsScreen} options={{ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />) }}/>
         <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarIcon: () => (<Ionicons name='settings' size={24} color='black' />) }}/>
       </Tab.Navigator>
