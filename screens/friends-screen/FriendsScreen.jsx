@@ -19,6 +19,8 @@ export default function FriendsScreen () {
   const [friends, setFriends] = useState([])
   const [friendRequests, setFriendRequests] = useState([])
   const [friendRequestsBackup, setFriendRequestsBackup] = useState([])
+  const [offset, setOffset] = useState(0)
+  const [endOfResults, setEndOfResults] = useState(false)
 
   // Get data when page loads
   useEffect(async () => {
@@ -90,35 +92,35 @@ export default function FriendsScreen () {
   }, [])
 
   // DO I NEED THE CONTENT TYPE IF IT DOSEN'T HAVE A BODT
-  useEffect(async () => {
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/search?limit=${pagination}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization': token
-        }
-      })
-      switch (response.status) {
-        case (200): {
-          setUsers(await response.json())
-          break
-        }
-        case (401): {
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-          break
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps('Error', 'Error occured please try again later', true)
-    }
-  }, [pagination])
+  // useEffect(async () => {
+  //   try {
+  //     const response = await fetch(`http://localhost:3333/api/1.0.0/search?limit=${pagination}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //         'X-Authorization': token
+  //       }
+  //     })
+  //     switch (response.status) {
+  //       case (200): {
+  //         setUsers(await response.json())
+  //         break
+  //       }
+  //       case (401): {
+  //         setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+  //         break
+  //       }
+  //       case (500): {
+  //         setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+  //         break
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log(err)
+  //     setErrorAlertProps('Error', 'Error occured please try again later', true)
+  //   }
+  // }, [pagination])
 
   useEffect(() => {
     console.log(users)
@@ -240,6 +242,64 @@ export default function FriendsScreen () {
     }
   }
 
+  const changePage = (type) => {
+    if (type === 'up' && endOfResults === false) {
+      setOffset(offset + pagination)
+    } else if (type === 'down' && offset > 0) {
+      setOffset(offset - pagination)
+    }
+  }
+
+  const getUsersOffset = async () => {
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/search?limit=${pagination}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Authorization': token
+        }
+      })
+      switch (response.status) {
+        case (200): {
+          const tempUsers = await response.json()
+          console.log('Setting user')
+          setUsers(tempUsers)
+          if (tempUsers.length < pagination) {
+            setEndOfResults(true)
+          } else {
+            setEndOfResults(false)
+          }
+          break
+        }
+        case (400): {
+          setErrorAlertProps('Start of Results', 'Cannot go back any further', true)
+          break
+        }
+        case (401): {
+          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+          break
+        }
+        case (500): {
+          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+          break
+        }
+      }
+    } catch (err) {
+      setErrorAlertProps('Error', 'An error occured please try again later', true)
+      console.log(err)
+    }
+  }
+
+  useEffect(async () => {
+    getUsersOffset()
+  }, [offset])
+
+  useEffect(() => {
+    setOffset(0)
+    getUsersOffset()
+  }, [pagination])
+
   return (
     <Box safeArea w={'100%'} h={'100%'}>
       {errorAlertVisible && <ErrorPopup />}
@@ -268,7 +328,7 @@ export default function FriendsScreen () {
             </Box>
           </HStack>
         </Radio.Group>
-        <SearchOptions />
+        <SearchOptions changePage={changePage} />
         <ScrollView h={'600'}>
           {returnData()}
         </ScrollView>
