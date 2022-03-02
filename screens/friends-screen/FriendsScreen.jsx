@@ -29,7 +29,6 @@ export default function FriendsScreen () {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
           'X-Authorization': token
         }
       })
@@ -66,7 +65,6 @@ export default function FriendsScreen () {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
           'X-Authorization': token
         }
       })
@@ -91,40 +89,6 @@ export default function FriendsScreen () {
     }
   }, [])
 
-  //DO I NEED THE CONTENT TYPE IF IT DOSEN'T HAVE A BODT
-
-  useEffect(() => {
-    console.log(users)
-    console.log(friendRequests)
-    console.log('friends')
-    console.log(friends)
-  }, [users, friendRequests, friends])
-
-  const returnData = () => {
-    if (radioValue === 'find-friends') {
-      return (
-        users.map(user => {
-          return (
-            <UserCard type='find' key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} />
-          )
-        }))
-    } else if (radioValue === 'friend-requests') {
-      return (
-        friendRequests.map(request => {
-          return (
-            <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
-          )
-        }))
-    } else if (radioValue === 'friends') {
-      return (
-        friends.map(friend => {
-          return (
-            <UserCard type='friend' key={friend.user_id} id={friend.user_id} firstName={friend.user_givenname} lastName={friend.user_familyname} />
-          )
-        }))
-    }
-  }
-
   const searchData = async (searchValue) => {
     if (radioValue === 'find-friends') {
       try {
@@ -132,7 +96,6 @@ export default function FriendsScreen () {
           method: 'GET',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
             'X-Authorization': token
           }
         })
@@ -161,7 +124,6 @@ export default function FriendsScreen () {
             method: 'GET',
             headers: {
               Accept: 'application/json',
-              'Content-Type': 'application/json',
               'X-Authorization': token
             }
           })
@@ -205,7 +167,6 @@ export default function FriendsScreen () {
             }
           })
         })
-        console.log(tempArray)
         setFriendRequests(tempArray)
       } else if (searchValue.length === 0) {
         setFriendRequests(friendRequestsBackup)
@@ -227,14 +188,12 @@ export default function FriendsScreen () {
         method: 'GET',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
           'X-Authorization': token
         }
       })
       switch (response.status) {
         case (200): {
           const tempUsers = await response.json()
-          console.log('Setting user')
           setUsers(tempUsers)
           if (tempUsers.length < pagination) {
             setEndOfResults(true)
@@ -258,7 +217,6 @@ export default function FriendsScreen () {
       }
     } catch (err) {
       setErrorAlertProps('Error', 'An error occured please try again later', true)
-      console.log(err)
     }
   }
 
@@ -273,13 +231,46 @@ export default function FriendsScreen () {
     setOffset(0)
   }, [pagination])
 
+  const renderLists = () => {
+    if (radioValue === 'find-friends') {
+      return (
+        users.map(user => {
+          return (
+            <UserCard type='find' key={user.user_id} id={user.user_id} firstName={user.user_givenname} lastName={user.user_familyname} />
+          )
+        }))
+    } else if (radioValue === 'friend-requests') {
+      return (
+        friendRequests.map(request => {
+          return (
+            <UserCard type='request' key={request.user_id} id={request.user_id} firstName={request.first_name} lastName={request.last_name} friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+          )
+        }))
+    } else if (radioValue === 'friends') {
+      return (
+        friends.map(friend => {
+          return (
+            <UserCard type='friend' key={friend.user_id} id={friend.user_id} firstName={friend.user_givenname} lastName={friend.user_familyname} />
+          )
+        }))
+    }
+  }
+
+  const renderRefine = () => {
+    if (radioValue === 'find-friends') {
+      return <SearchOptions changePage={changePage} />
+    } else {
+      return null
+    }
+  }
+
   return (
     <Box safeArea w={'100%'} h={'100%'}>
       {errorAlertVisible && <ErrorPopup />}
       <VStack p='5'>
         <Box bg={'white'} py={'2'} px={'3'} m={'1'} borderRadius={'5'} shadow={'5'}>
           <HStack>
-            <Input onChangeText={value => searchData(value)} placeholder="Search People & Places" w={'90%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
+            <Input onChangeText={value => searchData(value)} placeholder="Search Users" w={'100%'} borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} />
           </HStack>
         </Box>
         <Radio.Group m='2' value={radioValue} onChange={nextValue => { setRadioValue(nextValue) }} name='friendsGroup' accessibilityLabel='Selct your friends or search for a friend'>
@@ -301,9 +292,9 @@ export default function FriendsScreen () {
             </Box>
           </HStack>
         </Radio.Group>
-        <SearchOptions changePage={changePage} />
+        {renderRefine()}
         <ScrollView h={'600'}>
-          {returnData()}
+          {renderLists()}
         </ScrollView>
       </VStack>
     </Box>
