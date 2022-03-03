@@ -24,8 +24,6 @@ export default function ProfileScreen ({ route, navigation }) {
   const { profileType } = route.params
   console.log(profileType)
 
-  // console.log(JSON.stringify(test))
-
   // Runs on mount to get and set user details
   useEffect(async () => {
     try {
