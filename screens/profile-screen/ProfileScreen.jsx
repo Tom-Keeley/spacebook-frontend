@@ -9,13 +9,15 @@ import { Camera } from 'expo-camera'
 // Custom imports
 import EditDetails from '../../components/edit-details/EditDetails'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
+import { getUserDetails, getUserProfile, uploadProfilePicture } from '../../utils/HelperFunctions'
+import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 
 // ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ route, navigation }) {
   const toast = useToast()
-  const { setErrorAlertProps, errorAlertVisible, token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
+  const { loadingSpinnerVisible, setLoadingSpinnerVisible, setErrorAlertProps, errorAlertVisible, token, userId, firstName, setFirstName, lastName, setLastName, email, setEmail, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
   const [image, setImage] = useState(null)
   const [hasPermission, setHasPermission] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back)
@@ -26,74 +28,16 @@ export default function ProfileScreen ({ route, navigation }) {
 
   // Runs on mount to get and set user details
   useEffect(async () => {
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization': token
-        }
-      })
-      switch (response.status) {
-        case (200): {
-          const json = await response.json()
-          setFirstName(json.first_name)
-          setLastName(json.last_name)
-          setEmail(json.email)
-          break
-        }
-        case (401): {
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        }
-        case (404): {
-          setErrorAlertProps('User not found', 'User not found please try again', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server occured please try again', true)
-          break
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps('Error', 'An error occured please try again later', true)
+    const userDetailsResponse = await getUserDetails(token, userId, setErrorAlertProps)
+    if (userDetailsResponse.success === true) {
+      setFirstName(userDetailsResponse.firstName)
+      setLastName(userDetailsResponse.lastName)
+      setEmail(userDetailsResponse.email)
     }
 
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-        method: 'GET',
-        headers: {
-          'X-Authorization': token
-        }
-      })
-      switch (response.status) {
-        case (200): {
-          const resBlob = await response.blob()
-          const data = URL.createObjectURL(resBlob)
-          console.log('success')
-          console.log(resBlob)
-          console.log(data)
-          setImage(data)
-          break
-        }
-        case (401): {
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        }
-        case (404): {
-          setErrorAlertProps('User not found', 'User not found please try again', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server occured please try again', true)
-          break
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps('Error', 'An error occured please try again later', true)
+    const profilePictureResponse = await getUserProfile(token, userId, setErrorAlertProps)
+    if (profilePictureResponse.success === true) {
+      setImage(profilePictureResponse.data)
     }
   }, [])
 
@@ -115,6 +59,7 @@ export default function ProfileScreen ({ route, navigation }) {
     })()
   }, [])
 
+  // NEED TO SHOW THIS ON SCREEN
   if (hasPermission === null) {
     return <View />
   }
@@ -154,51 +99,23 @@ export default function ProfileScreen ({ route, navigation }) {
   }
 
   const uploadToServer = async (data) => {
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'image/png',
-          'X-Authorization': token
-        },
-        body: data
+    setLoadingSpinnerVisible(true)
+    const response = await uploadProfilePicture(token, userId, setErrorAlertProps, data)
+    if (response.success === true) {
+      setShowCameraModal(false)
+      setLoadingSpinnerVisible(false)
+      toast.show({
+        title: 'Profile picture updated',
+        status: 'success',
+        placement: 'top'
       })
-      switch (response.status) {
-        case (200): {
-          setShowCameraModal(false)
-          toast.show({
-            title: 'Profile picture updated',
-            status: 'success',
-            placement: 'top'
-          })
-          break
-        }
-        case (400): {
-          setErrorAlertProps('Bad Request', 'Bad request sent please try again', true)
-          break
-        }
-        case (401): {
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        }
-        case (404): {
-          setErrorAlertProps('User not found', 'User not found please try again', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server occured please try again', true)
-          break
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps('Error', 'An error occured please try again later', true)
     }
   }
 
   return (
     <Center w={'100%'} h={'100%'}>
       {errorAlertVisible && <ErrorPopup />}
+      {loadingSpinnerVisible && <LoadingSpinner />}
       <Modal size={'xl'} h='100%' isOpen={showCameraModal} onClose={() => setShowCameraModal(false)}>
         <Modal.Content minHeight='80%' maxWidth="400px">
         <Modal.Header>Take Photo</Modal.Header>

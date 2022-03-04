@@ -5,11 +5,11 @@ import propTypes from 'prop-types'
 
 // Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
-import ErrorPopup from '../error-popup/ErrorPopup'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
+import { signUp, editDetails } from '../../utils/HelperFunctions'
 
 export default function UserForm ({ type, navigation, firstName, lastName, email }) {
-  const { setErrorAlertProps, errorAlertVisible, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId, setUserId, setFormModalVisible, setUserDetailsUpdated } = useContext(SpaceBookContext)
+  const { setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId, setUserId, setFormModalVisible, setUserDetailsUpdated } = useContext(SpaceBookContext)
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [lastNameErrorReason, setLastNameErrorReason] = useState('')
@@ -92,121 +92,31 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
 
   const onSubmit = () => {
     if (validateDetails()) {
-      type === 'signup' ? signUp() : editDetails()
+      type === 'signup' ? signUpNewUser() : editUserDetails()
     }
   }
 
-  const signUp = async () => {
+  const signUpNewUser = async () => {
     console.log(formData)
     setLoadingSpinnerVisible(true)
-    try {
-      const response = await fetch('http://localhost:3333/api/1.0.0/user', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email.toLowerCase(),
-          password: formData.password
-        })
-      })
-
-      switch (response.status) {
-        case (201): {
-          try {
-            const response = await fetch('http://localhost:3333/api/1.0.0/login', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                email: formData.email,
-                password: formData.password
-              })
-            })
-            const json = await response.json()
-            switch (response.status) {
-              case (200): {
-                setToken(json.token)
-                setUserId(json.id)
-                setLoadingSpinnerVisible(false)
-                navigation.push('Home')
-                break
-              }
-              case (400): {
-                setErrorAlertProps('Invalid login details', 'Unable to log in please try again', true)
-                break
-              }
-              case (500): {
-                setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-                break
-              }
-            }
-          } catch (err) {
-            setErrorAlertProps('Error', 'Error occured please try again', true)
-          }
-          break
-        }
-        case (400): {
-          setErrorAlertProps('Bad Request', 'Unable to sign up please try again', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-        }
-      }
-    } catch (err) {
-      setErrorAlertProps(`${err.message}`, 'Failed to sign up please try again', true)
+    const response = await signUp(setErrorAlertProps, formData)
+    console.log(response)
+    if (response.success === true) {
+      console.log('here')
+      setToken(response.token)
+      setUserId(response.userId)
+      setLoadingSpinnerVisible(false)
+      navigation.push('Home')
     }
   }
 
-  const editDetails = async () => {
+  const editUserDetails = async () => {
     setLoadingSpinnerVisible(true)
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
-        method: 'PATCH',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization': token
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          password: formData.password
-        })
-      })
-
-      switch (response.status) {
-        case 200:
-          console.log('success')
-          setUserDetailsUpdated(true)
-          setLoadingSpinnerVisible(false)
-          setFormModalVisible(false)
-          break
-        case 400:
-          setErrorAlertProps('Bad Request', 'Failed to edit details please try again', true)
-          break
-        case 401:
-          setErrorAlertProps('Unauthorised', 'You are not authorised to do this action, plese log in', true)
-          break
-        case 403:
-          setErrorAlertProps('Forbidden', 'This action is forbidden', false)
-          break
-        case 404:
-          setErrorAlertProps('Not Found', 'Unable to find user details please try again', false)
-          break
-        case 500:
-          setErrorAlertProps('Server Error', 'Server Error please try again later', false)
-          break
-      }
-    } catch (err) {
-      setErrorAlertProps(`${err.message}`, 'Failed to edit details please try again', true)
+    const response = await editDetails(token, userId, setErrorAlertProps, formData)
+    if (response.success === true) {
+      setUserDetailsUpdated(true)
+      setLoadingSpinnerVisible(false)
+      setFormModalVisible(false)
     }
   }
 
@@ -256,7 +166,6 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
   return (
     <NativeBaseProvider theme={theme}>
       {loadingSpinnerVisible && <LoadingSpinner />}
-      {errorAlertVisible && <ErrorPopup />}
       <Center h='100%' w="100%">
         <Box safeArea w="90%" maxW="290" py="8">
           {checkTypeHeader()}

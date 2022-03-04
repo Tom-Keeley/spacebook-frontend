@@ -6,6 +6,7 @@ import propTypes from 'prop-types'
 // Import custom
 import ErrorPopup from '../error-popup/ErrorPopup'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
+import { login } from '../../utils/HelperFunctions'
 
 export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
@@ -46,47 +47,18 @@ export default function LoginForm ({ navigation }) {
 
   const onSubmit = async () => {
     if (validateLoginDetails()) {
-      login()
+      loginUser()
     }
   }
 
-  const login = async () => {
+  const loginUser = async () => {
     setLoadingSpinnerVisible(true)
-    try {
-      const response = await fetch('http://localhost:3333/api/1.0.0/login', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      })
-
-      switch (response.status) {
-        case 200: {
-          const json = await response.json()
-          setToken(json.token)
-          setUserId(json.id)
-          setLoadingSpinnerVisible(false)
-          navigation.push('Home')
-          break
-        }
-        case 400: {
-          setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
-          setLoadingSpinnerVisible(false)
-          break
-        }
-        case 500: {
-          setErrorAlertProps('Server error', 'Failed to sign in please try again', true)
-          break
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
+    const response = await login(setErrorAlertProps, formData)
+    if (response.success === true) {
+      setToken(response.token)
+      setUserId(response.userId)
+      setLoadingSpinnerVisible(false)
+      navigation.push('Home')
     }
   }
 
@@ -160,7 +132,7 @@ export default function LoginForm ({ navigation }) {
                 {passwordErrorReason.includes('Password') ? <FormControl.ErrorMessage>{passwordErrorReason}</FormControl.ErrorMessage> : null}
                 <Link _text={{ fontSize: 'xs', fontWeight: '500', color: 'indigo.500' }} alignSelf="flex-end" mt="1">Forget Password?</Link>
               </FormControl>
-              <Button mt="2" bg='title.bg' onPress={onSubmit}>
+              <Button mt="2" bg='title.bg' onPress={() => onSubmit()}>
                 Sign in
               </Button>
               <HStack mt="6" justifyContent="center">

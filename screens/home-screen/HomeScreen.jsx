@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { extendTheme, NativeBaseProvider } from 'native-base'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { getNumOfFriendRequests } from '../../utils/HelperFunctions'
@@ -16,9 +16,9 @@ export default function HomeScreen () {
   const Tab = createBottomTabNavigator()
 
   const numOfFriendRequests = async () => {
-    const num = await getNumOfFriendRequests(token, setErrorAlertProps)
-    if (num > 0) {
-      setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />), tabBarBadge: num })
+    const response = await getNumOfFriendRequests(token, setErrorAlertProps)
+    if (response.success === true && response.num > 0) {
+      setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />), tabBarBadge: response.num })
     } else {
       setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />) })
     }
