@@ -43,7 +43,6 @@ export default function SpaceBookContextProvider ({ children }) {
   const [totalFriendRequests, setTotalFriendRequests] = useState(0)
 
   useEffect(() => {
-    console.log(totalFriendRequests)
   }, [totalFriendRequests])
 
   useEffect(() => {
