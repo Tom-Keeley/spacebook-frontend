@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react'
 import { Box, Text, Button, HStack, Flex, Center, useToast } from 'native-base'
 import propTypes from 'prop-types'
 
+import { acceptFriendRequest, rejectFriendRequest, sendFriendRequest } from '../../utils/HelperFunctions'
+
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
@@ -10,115 +12,39 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
-  const sendFriendRequest = async () => {
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Authorization': token
-        }
+  const newFriendRequest = async () => {
+    const response = await sendFriendRequest(token, setErrorAlertProps, id)
+    if (response.success === true) {
+      setButtonDisabled(true)
+      toast.show({
+        title: 'Friend request sent',
+        status: 'success',
+        placement: 'top'
       })
-
-      switch (response.status) {
-        case (201): {
-          console.log('success')
-          setButtonDisabled(true)
-          toast.show({
-            title: 'Friend request sent',
-            status: 'success',
-            placement: 'top'
-          })
-          break
-        }
-        case (401): {
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        }
-        case (403): {
-          setErrorAlertProps('Already Friends', 'You are already friends with this person', true)
-          break
-        }
-        case (404): {
-          setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
-          break
-        }
-        case (500): {
-          setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-        }
-      }
-    } catch (err) {
-      console.log(err)
-      setErrorAlertProps('Error', 'Error occured please try again later', true)
     }
   }
 
-  const acceptFriendRequest = async () => {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Authorization': token
-      }
-    })
-
-    switch (response.status) {
-      case (200): {
-        toast.show({
-          title: `Added ${firstName} ${lastName} as a friend`,
-          status: 'success',
-          placement: 'top'
-        })
-        removeRequestFromState()
-        break
-      }
-      case (401): {
-        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-        break
-      }
-      case (404): {
-        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
-        break
-      }
-      case (500): {
-        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-      }
+  const acceptRequest = async () => {
+    const response = await acceptFriendRequest(token, setErrorAlertProps, id)
+    if (response.success === true) {
+      toast.show({
+        title: `Added ${firstName} ${lastName} as a friend`,
+        status: 'success',
+        placement: 'top'
+      })
+      removeRequestFromState()
     }
   }
 
-  const rejectFriendRequest = async () => {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Authorization': token
-      }
-    })
-
-    switch (response.status) {
-      case (200): {
-        toast.show({
-          title: `Declined ${firstName} ${lastName}'s friend request`,
-          status: 'success',
-          placement: 'top'
-        })
-        removeRequestFromState()
-        break
-      }
-      case (401): {
-        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-        break
-      }
-      case (404): {
-        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
-        break
-      }
-      case (500): {
-        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
-      }
+  const rejectRequest = async () => {
+    const response = await rejectFriendRequest(token, id, setErrorAlertProps)
+    if (response.success === true) {
+      toast.show({
+        title: `Declined ${firstName} ${lastName}'s friend request`,
+        status: 'success',
+        placement: 'top'
+      })
+      removeRequestFromState()
     }
   }
 
@@ -137,15 +63,15 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     if (type === 'find') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'} disabled={buttonDisabled} onPress={sendFriendRequest}><Text color={buttonDisabled === false ? 'primary.500' : 'white'}>Add Friend</Text></Button>
+          <Button variant={'ghost'} disabled={buttonDisabled} onPress={newFriendRequest}><Text color={buttonDisabled === false ? 'primary.500' : 'white'}>Add Friend</Text></Button>
           <Button variant={'ghost'}><Text color={'primary.500'}>View Profile</Text></Button>
         </Flex>
       )
     } else if (type === 'request') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'} onPress={acceptFriendRequest}>Accept</Button>
-          <Button variant={'ghost'} onPress={rejectFriendRequest}>Reject</Button>
+          <Button variant={'ghost'} onPress={acceptRequest}>Accept</Button>
+          <Button variant={'ghost'} onPress={rejectRequest}>Reject</Button>
         </Flex>
       )
     } else if (type === 'friend') {

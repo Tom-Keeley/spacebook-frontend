@@ -33,6 +33,34 @@ export const login = async (setErrorAlertProps, formData) => {
   }
 }
 
+// Log out POST
+export const logOut = async (token, setErrorAlertProps) => {
+  try {
+    const response = await fetch('http://localhost:3333/api/1.0.0/logout', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'content-type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200):
+        return { success: true }
+      case (401):
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      case (500):
+        setErrorAlertProps('Server Error', 'Server error occured please try agai later', true)
+        return { success: false }
+    }
+  } catch (err) {
+    console.log(err)
+    return { success: false }
+  }
+}
+
 // Sign up POST
 export const signUp = async (setErrorAlertProps, formData) => {
   try {
@@ -247,6 +275,255 @@ export const uploadProfilePicture = async (token, userId, setErrorAlertProps, da
   } catch (err) {
     console.log(err)
     setErrorAlertProps('Error', 'An error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Get list of friends GET
+export const getFriends = async (token, userId, setErrorAlertProps) => {
+  try {
+    const friendsResponse = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/friends`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (friendsResponse.status) {
+      case (200): {
+        const friends = await friendsResponse.json()
+        return { success: true, friends: friends }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'Can only view the friends of yourself or your friends', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('Not Found', 'User not found please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Sever error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'An error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Get list of friend Requests GET
+export const getfriendRequests = async (token, setErrorAlertProps) => {
+  try {
+    const friendRequestResponse = await fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (friendRequestResponse.status) {
+      case (200): {
+        const friendRequests = await friendRequestResponse.json()
+        return { success: true, friendRequests: friendRequests }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to do this action please log in', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Search for a user or friend
+export const searchUsers = async (token, setErrorAlertProps, searchIn, searchValue) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchValue}&searchin=${searchIn}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+    switch (response.status) {
+      case (200): {
+        const results = await response.json()
+        return { success: true, results: results }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    setErrorAlertProps('Error', 'An error occured please try again later', true)
+    console.log(err)
+    return { success: false }
+  }
+}
+
+// Get list of users - paginated GET
+export const getUsersPaginated = async (token, setErrorAlertProps, radioValue, pagination, offset) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/search?search_in=${radioValue}&limit=${pagination}&offset=${offset}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+    switch (response.status) {
+      case (200): {
+        const tempUsers = await response.json()
+        return { success: true, users: tempUsers, length: tempUsers.length }
+      }
+      case (400): {
+        setErrorAlertProps('Start of Results', 'Cannot go back any further', true)
+        return { success: false }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    setErrorAlertProps('Error', 'An error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Send a friend request POST
+export const sendFriendRequest = async (token, setErrorAlertProps, id) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (201): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Already Friends', 'You are already friends with this person', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Accept a friend request POST
+export const acceptFriendRequest = async (token, setErrorAlertProps, id) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+    return { success: false }
+  }
+}
+
+// Reject a friend request DELETE
+export const rejectFriendRequest = async (token, id, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }
 }

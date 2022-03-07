@@ -9,37 +9,18 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 // Custom imports
 import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
+import { logOut } from '../../utils/HelperFunctions'
 
 export default function SettingsScreen ({ navigation }) {
   const { loadingSpinnerVisible, setLoadingSpinnerVisible, token, errorAlertVisible, setErrorAlertProps } = useContext(SpaceBookContext)
 
   const signOut = async () => {
-    setLoadingSpinnerVisible(true)
-    try {
-      const response = await fetch('http://localhost:3333/api/1.0.0/logout', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'content-type': 'application/json',
-          'X-Authorization': token
-        }
-      })
-
-      switch (response.status) {
-        case (200):
-          console.log('Logged out')
-          setLoadingSpinnerVisible(false)
-          navigation.navigate('Welcome', { screen: 'Welcome-screen' })
-          break
-        case (401):
-          setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
-          break
-        case (500):
-          setErrorAlertProps('Server Error', 'Server error occured please try agai later', true)
-      }
-    } catch (err) {
-      console.log(err)
+    const response = await logOut(token, setErrorAlertProps)
+    if (response.success === true) {
+      setLoadingSpinnerVisible(false)
+      navigation.navigate('Welcome', { screen: 'Welcome-screen' })
     }
+    setLoadingSpinnerVisible(false)
   }
 
   return (
