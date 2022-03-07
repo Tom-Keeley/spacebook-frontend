@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Box, Avatar, Center, Text } from 'native-base'
 import ChangeProfilePicture from '../change-profile-picture/ChangeProfilePicture'
+import MutualFriends from '../mutual-friends/MutualFriends'
+import propTypes from 'prop-types'
 
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import { getUserProfilePic } from '../../utils/HelperFunctions'
@@ -13,6 +15,10 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
     getProfilePic()
   }, [])
 
+  useEffect(() => {
+    getProfilePic()
+  }, [profileType])
+
   const getProfilePic = async () => {
     if (profileType === 'personal') {
       const profilePictureResponse = await getUserProfilePic(token, userId, setErrorAlertProps)
@@ -20,8 +26,6 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
         setImage(profilePictureResponse.data)
       }
     } else if (profileType === 'userProfile') {
-      console.log('here')
-      console.log(id)
       const profilePictureResponse = await getUserProfilePic(token, id, setErrorAlertProps)
       if (profilePictureResponse.success === true) {
         setImage(profilePictureResponse.data)
@@ -41,14 +45,11 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
       return (
         <>
           <Center><Text fontSize="3xl">{`${userFirstName} ${userLastName}`}</Text></Center>
+          <MutualFriends id={id} />
         </>
       )
     }
   }
-
-  useEffect(() => {
-    getProfilePic()
-  }, [profileType])
 
   return (
     <>
@@ -61,4 +62,16 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
       </Box>
     </>
   )
+}
+
+ProfileInformation.propTypes = {
+  id: propTypes.string.isRequired,
+  userFirstName: propTypes.string.isRequired,
+  userLastName: propTypes.string.isRequired
+}
+
+ProfileInformation.defaultProps = {
+  id: '',
+  userFirstName: '',
+  userLastName: ''
 }

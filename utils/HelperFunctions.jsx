@@ -528,6 +528,44 @@ export const rejectFriendRequest = async (token, id, setErrorAlertProps) => {
   }
 }
 
+// Get a list of friends for a user GET
+export const getUsersFriends = async (token, id, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        const results = await response.json()
+        return { success: true, userFriends: results }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'You can only view the friends of yourself or your friends', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 // MISC
 export const getNumOfFriendRequests = async (token, setErrorAlertProps) => {
   try {
