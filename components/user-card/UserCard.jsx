@@ -62,7 +62,6 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
   }
 
   const viewProfile = (buttonLocation) => {
-    console.log(buttonLocation)
     setProfileType('userProfile')
     navigation.navigate('Profile', { id: id, buttonLocation: buttonLocation, userFirstName: firstName, userLastName: lastName })
   }

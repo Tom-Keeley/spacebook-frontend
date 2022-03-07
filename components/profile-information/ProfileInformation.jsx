@@ -35,7 +35,6 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
   }
 
   const renderName = () => {
-    console.log(buttonLocation)
     if (profileType === 'personal') {
       return (
         <>
