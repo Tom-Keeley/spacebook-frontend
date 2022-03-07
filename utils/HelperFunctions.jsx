@@ -206,7 +206,7 @@ export const getUserDetails = async (token, userId, setErrorAlertProps) => {
 }
 
 // Get user profile picture GET
-export const getUserProfile = async (token, userId, setErrorAlertProps) => {
+export const getUserProfilePic = async (token, userId, setErrorAlertProps) => {
   try {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
       method: 'GET',
