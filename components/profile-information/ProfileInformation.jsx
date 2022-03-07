@@ -40,12 +40,15 @@ export default function ProfileInformation () {
     setUserDetailsUpdated(false)
   }, [userDetailsUpdated])
 
-  // NEED TO SHOW THIS ON SCREEN
   if (hasPermission === null) {
     return <View />
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>
+    toast.show({
+      title: 'Cannot access camera',
+      status: 'error',
+      placement: 'top'
+    })
   }
 
   const selectProfilePicture = async () => {
