@@ -70,7 +70,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
       return (
         <Flex direction='row'>
           <Button variant={'ghost'} disabled={buttonDisabled} onPress={newFriendRequest}><Text color={buttonDisabled === false ? 'primary.500' : 'white'}>Add Friend</Text></Button>
-          <Button variant={'ghost'}><Text color={'primary.500'}>View Profile</Text></Button>
+          <Button variant={'ghost'} onPress={viewProfile}><Text color={'primary.500'}>View Profile</Text></Button>
         </Flex>
       )
     } else if (type === 'request') {
