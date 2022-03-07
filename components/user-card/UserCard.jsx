@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react'
 import { Box, Text, Button, HStack, Flex, Center, useToast } from 'native-base'
 import propTypes from 'prop-types'
 
-import { acceptFriendRequest, rejectFriendRequest, sendFriendRequest } from '../../utils/HelperFunctions'
+import { sendFriendRequest, acceptFriendRequest, rejectFriendRequest } from '../../utils/HelperFunctions'
 
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests, navigation }) {
-  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests } = useContext(SpaceBookContext)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
@@ -32,6 +32,9 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
         status: 'success',
         placement: 'top'
       })
+      if (totalFriendRequests > 0) {
+        setTotalFriendRequests(totalFriendRequests - 1)
+      }
       removeRequestFromState()
     }
   }
@@ -44,6 +47,9 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
         status: 'success',
         placement: 'top'
       })
+      if (totalFriendRequests > 0) {
+        setTotalFriendRequests(totalFriendRequests - 1)
+      }
       removeRequestFromState()
     }
   }

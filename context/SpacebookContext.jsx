@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react'
 import propTypes from 'prop-types'
+import { getNumOfFriendRequests } from '../utils/HelperFunctions'
 
 export const SpaceBookContext = createContext()
 
@@ -31,6 +32,19 @@ export default function SpaceBookContextProvider ({ children }) {
     setErrorAlertMessage(alertMessage)
     setErrorAlertVisible(alertVisible)
   }
+
+  // Number of friend requests
+  const numOfFriendRequests = async (token, setErrorAlertProps) => {
+    const response = await getNumOfFriendRequests(token, setErrorAlertProps)
+    if (response.success === true && response.num > 0) {
+      setTotalFriendRequests(response.num)
+    }
+  }
+  const [totalFriendRequests, setTotalFriendRequests] = useState(0)
+
+  useEffect(() => {
+    console.log(totalFriendRequests)
+  }, [totalFriendRequests])
 
   useEffect(() => {
     console.log('TOKEN')
@@ -65,7 +79,10 @@ export default function SpaceBookContextProvider ({ children }) {
       errorAlertTitle,
       setErrorAlertProps,
       formModalVisible,
-      setFormModalVisible
+      setFormModalVisible,
+      numOfFriendRequests,
+      totalFriendRequests,
+      setTotalFriendRequests
     }}>
       {children}
     </SpaceBookContext.Provider>

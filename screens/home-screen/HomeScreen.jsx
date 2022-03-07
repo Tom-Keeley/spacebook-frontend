@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { extendTheme, NativeBaseProvider } from 'native-base'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { getNumOfFriendRequests } from '../../utils/HelperFunctions'
 
 // Custom imports
 import ProfileScreen from '../profile-screen/ProfileScreen'
@@ -11,22 +10,26 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function HomeScreen () {
+  const { numOfFriendRequests, totalFriendRequests, token, setErrorAlertProps } = useContext(SpaceBookContext)
   const [tabOptions, setTabOptions] = useState({})
-  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const Tab = createBottomTabNavigator()
 
-  const numOfFriendRequests = async () => {
-    const response = await getNumOfFriendRequests(token, setErrorAlertProps)
-    if (response.success === true && response.num > 0) {
-      setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />), tabBarBadge: response.num })
+  const renderTabBadge = async () => {
+    if (totalFriendRequests > 0) {
+      setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />), tabBarBadge: totalFriendRequests })
     } else {
       setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />) })
     }
   }
 
-  useEffect(() => {
-    numOfFriendRequests()
+  useEffect(async () => {
+    await numOfFriendRequests(token, setErrorAlertProps)
+    renderTabBadge()
   }, [])
+
+  useEffect(() => {
+    renderTabBadge()
+  }, [totalFriendRequests])
 
   return (
     <NativeBaseProvider theme={theme}>
