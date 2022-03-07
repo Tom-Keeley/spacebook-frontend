@@ -40,5 +40,5 @@ export default function MutualFriends ({ id }) {
 }
 
 MutualFriends.propTypes = {
-  id: propTypes.string.isRequired
+  id: propTypes.number.isRequired
 }

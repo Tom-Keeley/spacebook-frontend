@@ -65,13 +65,13 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
 }
 
 ProfileInformation.propTypes = {
-  id: propTypes.string.isRequired,
+  id: propTypes.number.isRequired,
   userFirstName: propTypes.string.isRequired,
   userLastName: propTypes.string.isRequired
 }
 
 ProfileInformation.defaultProps = {
-  id: '',
+  id: 0,
   userFirstName: '',
   userLastName: ''
 }
