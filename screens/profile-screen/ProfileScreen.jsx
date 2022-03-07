@@ -13,18 +13,34 @@ import PersonalDetails from '../../components/personal-details/PersonalDetails'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ route, navigation }) {
-  const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email } = useContext(SpaceBookContext)
-  const { profileType } = route.params
-  console.log(profileType)
+  const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
+  const { id, userFirstName, userLastName } = route.params
+  console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
+
+  const renderComponents = () => {
+    if (profileType === 'personal') {
+      return (
+        <>
+          <ProfileInformation profileType={profileType} />
+          <PersonalDetails />
+          <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
+        </>
+      )
+    } else if (profileType === 'userProfile') {
+      return (
+        <>
+          <ProfileInformation profileType={profileType} id={id} userFirstName={userFirstName} userLastName={userLastName} />
+        </>
+      )
+    }
+  }
 
   return (
     <Center w={'100%'} h={'100%'}>
       {errorAlertVisible && <ErrorPopup />}
       {loadingSpinnerVisible && <LoadingSpinner />}
       <VStack >
-        <ProfileInformation />
-        <PersonalDetails />
-        <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
+        {renderComponents()}
       </VStack>
     </Center>
   )

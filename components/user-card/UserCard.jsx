@@ -8,7 +8,7 @@ import { sendFriendRequest, acceptFriendRequest, rejectFriendRequest } from '../
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests, navigation }) {
-  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests, setProfileType } = useContext(SpaceBookContext)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
@@ -62,7 +62,8 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
   }
 
   const viewProfile = () => {
-    navigation.navigate('Profile', { profileType: 'userProfile' })
+    setProfileType('userProfile')
+    navigation.navigate('Profile', { id: id, userFirstName: firstName, userLastName: lastName })
   }
 
   const returnButtons = () => {

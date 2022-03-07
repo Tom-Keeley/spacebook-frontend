@@ -5,6 +5,9 @@ import { getNumOfFriendRequests } from '../utils/HelperFunctions'
 export const SpaceBookContext = createContext()
 
 export default function SpaceBookContextProvider ({ children }) {
+  // Profile Type
+  const [profileType, setProfileType] = useState('personal')
+
   // User Details
   const [token, setToken] = useState('')
   const [userId, setUserId] = useState(0)
@@ -60,6 +63,8 @@ export default function SpaceBookContextProvider ({ children }) {
       setToken,
       userId,
       setUserId,
+      profileType,
+      setProfileType,
       pagination,
       setPagination,
       firstName,
