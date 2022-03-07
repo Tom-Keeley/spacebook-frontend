@@ -14,7 +14,7 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ route, navigation }) {
   const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
-  const { id, userFirstName, userLastName } = route.params
+  const { id, buttonLocation, userFirstName, userLastName } = route.params
   console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
 
   const renderComponents = () => {
@@ -29,7 +29,7 @@ export default function ProfileScreen ({ route, navigation }) {
     } else if (profileType === 'userProfile') {
       return (
         <>
-          <ProfileInformation profileType={profileType} id={id} userFirstName={userFirstName} userLastName={userLastName} />
+          <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
         </>
       )
     }

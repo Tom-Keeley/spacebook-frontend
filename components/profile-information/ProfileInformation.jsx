@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { Box, Avatar, Center, Text } from 'native-base'
+import { Box, Avatar, Center, Text, Button, AddIcon } from 'native-base'
 import ChangeProfilePicture from '../change-profile-picture/ChangeProfilePicture'
 import MutualFriends from '../mutual-friends/MutualFriends'
 import propTypes from 'prop-types'
@@ -7,7 +7,7 @@ import propTypes from 'prop-types'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import { getUserProfilePic } from '../../utils/HelperFunctions'
 
-export default function ProfileInformation ({ id, userFirstName, userLastName }) {
+export default function ProfileInformation ({ id, buttonLocation, userFirstName, userLastName }) {
   const [image, setImage] = useState(null)
   const { firstName, email, token, userId, setErrorAlertProps, profileType } = useContext(SpaceBookContext)
 
@@ -20,6 +20,7 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
   }, [profileType])
 
   const getProfilePic = async () => {
+    console.log(buttonLocation)
     if (profileType === 'personal') {
       const profilePictureResponse = await getUserProfilePic(token, userId, setErrorAlertProps)
       if (profilePictureResponse.success === true) {
@@ -34,6 +35,7 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
   }
 
   const renderName = () => {
+    console.log(buttonLocation)
     if (profileType === 'personal') {
       return (
         <>
@@ -46,6 +48,7 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
         <>
           <Center><Text fontSize="3xl">{`${userFirstName} ${userLastName}`}</Text></Center>
           <MutualFriends id={id} />
+          {buttonLocation === 'user' ? <Button leftIcon={<AddIcon size="4" />}>Add Friend</Button> : null}
         </>
       )
     }
@@ -66,12 +69,14 @@ export default function ProfileInformation ({ id, userFirstName, userLastName })
 
 ProfileInformation.propTypes = {
   id: propTypes.number.isRequired,
+  buttonLocation: propTypes.string.isRequired,
   userFirstName: propTypes.string.isRequired,
   userLastName: propTypes.string.isRequired
 }
 
 ProfileInformation.defaultProps = {
   id: 0,
+  buttonLocation: '',
   userFirstName: '',
   userLastName: ''
 }

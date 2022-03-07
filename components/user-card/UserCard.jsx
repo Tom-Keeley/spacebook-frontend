@@ -61,9 +61,10 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     setFriendRequests(tempArray)
   }
 
-  const viewProfile = () => {
+  const viewProfile = (buttonLocation) => {
+    console.log(buttonLocation)
     setProfileType('userProfile')
-    navigation.navigate('Profile', { id: id, userFirstName: firstName, userLastName: lastName })
+    navigation.navigate('Profile', { id: id, buttonLocation: buttonLocation, userFirstName: firstName, userLastName: lastName })
   }
 
   const returnButtons = () => {
@@ -71,7 +72,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
       return (
         <Flex direction='row'>
           <Button variant={'ghost'} disabled={buttonDisabled} onPress={newFriendRequest}><Text color={buttonDisabled === false ? 'primary.500' : 'white'}>Add Friend</Text></Button>
-          <Button variant={'ghost'} onPress={viewProfile}><Text color={'primary.500'}>View Profile</Text></Button>
+          <Button variant={'ghost'} onPress={() => viewProfile('user')}><Text color={'primary.500'}>View Profile</Text></Button>
         </Flex>
       )
     } else if (type === 'request') {
@@ -84,7 +85,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     } else if (type === 'friend') {
       return (
         <Flex direction='row'>
-          <Button variant={'ghost'} onPress={viewProfile} >View Profile</Button>
+          <Button variant={'ghost'} onPress={() => viewProfile('friend')}>View Profile</Button>
         </Flex>
       )
     }
