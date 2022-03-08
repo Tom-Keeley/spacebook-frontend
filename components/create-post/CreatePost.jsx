@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { Fab, Icon, Modal, FormControl, Button, TextArea, AddIcon, useToast } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
 import { createNewPost } from '../../utils/HelperFunctions'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import ErrorPopup from '../error-popup/ErrorPopup'
 import { SpaceBookContext } from '../../context/SpacebookContext'
+import propTypes from 'prop-types'
 
 export default function CreatePost ({ id }) {
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
-  const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible, setErrorAlertVisible } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible } = useContext(SpaceBookContext)
   const toast = useToast()
 
   const addPost = async () => {
@@ -55,4 +56,8 @@ export default function CreatePost ({ id }) {
       </Modal>
     </>
   )
+}
+
+CreatePost.propTypes = {
+  id: propTypes.number.isRequired
 }
