@@ -417,7 +417,7 @@ export const getUsersPaginated = async (token, setErrorAlertProps, radioValue, p
 }
 
 // Send a friend request POST
-export const sendFriendRequest = async (token, setErrorAlertProps, id) => {
+export const sendFriendRequest = async (token, id, setErrorAlertProps) => {
   try {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
       method: 'POST',

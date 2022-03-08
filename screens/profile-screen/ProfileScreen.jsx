@@ -8,6 +8,7 @@ import ErrorPopup from '../../components/error-popup/ErrorPopup'
 import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 import ProfileInformation from '../../components/profile-information/ProfileInformation'
 import PersonalDetails from '../../components/personal-details/PersonalDetails'
+import CreatePost from '../../components/create-post/CreatePost'
 
 // ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
@@ -42,6 +43,7 @@ export default function ProfileScreen ({ route, navigation }) {
       <VStack >
         {renderComponents()}
       </VStack>
+      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost /> : null}
     </Center>
   )
 }
