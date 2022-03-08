@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Box } from 'native-base'
+import propTypes from 'prop-types'
 
 import { getPostsForAUser } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
@@ -20,4 +21,8 @@ export default function ListOfPosts ({ id }) {
       {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} />) })}
     </Box>
   )
+}
+
+ListOfPosts.propTypes = {
+  id: propTypes.number.isRequired
 }
