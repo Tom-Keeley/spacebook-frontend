@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { VStack, Center } from 'native-base'
+import { VStack, Center, ScrollView } from 'native-base'
 import propTypes from 'prop-types'
 
 // Custom imports
@@ -41,11 +41,13 @@ export default function ProfileScreen ({ route, navigation }) {
 
   return (
     <Center w={'100%'} h={'100%'}>
-      {errorAlertVisible && <ErrorPopup />}
-      {loadingSpinnerVisible && <LoadingSpinner />}
-      <VStack >
-        {renderComponents()}
-      </VStack>
+      <ScrollView h="500">
+        {errorAlertVisible && <ErrorPopup />}
+        {loadingSpinnerVisible && <LoadingSpinner />}
+        <VStack >
+          {renderComponents()}
+        </VStack>
+      </ScrollView>
       {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} /> : null}
     </Center>
   )

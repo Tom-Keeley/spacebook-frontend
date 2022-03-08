@@ -16,7 +16,7 @@ export default function ListOfPosts ({ id }) {
   }, [])
 
   return (
-    <Box bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
+    <Box safeArea bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
       {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} />) })}
     </Box>
   )
