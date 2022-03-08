@@ -20,7 +20,6 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
   }, [profileType])
 
   const getProfilePic = async () => {
-    console.log(buttonLocation)
     if (profileType === 'personal') {
       const profilePictureResponse = await getUserProfilePic(token, userId, setErrorAlertProps)
       if (profilePictureResponse.success === true) {
@@ -46,7 +45,7 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
       return (
         <>
           <Center><Text fontSize="3xl">{`${userFirstName} ${userLastName}`}</Text></Center>
-          <MutualFriends id={id} />
+          {buttonLocation === 'friend' ? <MutualFriends id={id} /> : null }
           {buttonLocation === 'user' ? <Button leftIcon={<AddIcon size="4" />}>Add Friend</Button> : null}
         </>
       )
