@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { VStack, Center, ScrollView } from 'native-base'
 import propTypes from 'prop-types'
 
@@ -10,14 +10,29 @@ import ProfileInformation from '../../components/profile-information/ProfileInfo
 import PersonalDetails from '../../components/personal-details/PersonalDetails'
 import CreatePost from '../../components/create-post/CreatePost'
 import ListOfPosts from '../../components/list-of-posts/ListOfPosts'
+import { getPostsForAUser } from '../../utils/HelperFunctions'
 
 // ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
-
 export default function ProfileScreen ({ route, navigation }) {
-  const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType, userId } = useContext(SpaceBookContext)
+  const { token, userId, setErrorAlertProps, loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
   const { id, buttonLocation, userFirstName, userLastName } = route.params
+  const [posts, setPosts] = useState([])
   console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
+
+  const getPosts = async () => {
+    if (profileType === 'personal') {
+      const results = await getPostsForAUser(token, userId, setErrorAlertProps)
+      setPosts(results.posts)
+    } else if (profileType === 'userProfile') {
+      const results = await getPostsForAUser(token, id, setErrorAlertProps)
+      setPosts(results.posts)
+    }
+  }
+
+  useEffect(() => {
+    getPosts()
+  }, [])
 
   const renderComponents = () => {
     if (profileType === 'personal') {
@@ -26,14 +41,14 @@ export default function ProfileScreen ({ route, navigation }) {
           <ProfileInformation profileType={profileType} />
           <PersonalDetails />
           <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
-          <ListOfPosts id={userId} />
+          <ListOfPosts id={userId} getPosts={getPosts} posts={posts}/>
         </>
       )
     } else if (profileType === 'userProfile') {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
-          {buttonLocation === 'friend' ? <ListOfPosts id={id} /> : null}
+          {buttonLocation === 'friend' ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} /> : null}
         </>
       )
     }
@@ -48,7 +63,7 @@ export default function ProfileScreen ({ route, navigation }) {
           {renderComponents()}
         </VStack>
       </ScrollView>
-      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} /> : null}
+      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} getPosts={getPosts} /> : null}
     </Center>
   )
 }

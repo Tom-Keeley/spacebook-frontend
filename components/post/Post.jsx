@@ -17,7 +17,6 @@ export default function Post ({ id, post, getPosts }) {
 
   const likePost = async () => {
     const response = await likeAPost(token, id, post.post_id, setErrorAlertProps)
-    console.log(response)
     if (response.success === true) {
       setLikedPost(true)
       setPostLikes(postLikes + 1)

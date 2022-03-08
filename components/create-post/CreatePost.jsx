@@ -7,7 +7,7 @@ import ErrorPopup from '../error-popup/ErrorPopup'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 
-export default function CreatePost ({ id }) {
+export default function CreatePost ({ id, getPosts }) {
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
   const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible } = useContext(SpaceBookContext)
@@ -17,6 +17,7 @@ export default function CreatePost ({ id }) {
     setLoadingSpinnerVisible(true)
     const response = await createNewPost(token, id, formData.text, setErrorAlertProps)
     if (response.success === true) {
+      getPosts()
       toast.show({
         title: 'Created post',
         status: 'success',
@@ -39,7 +40,7 @@ export default function CreatePost ({ id }) {
           <Modal.Body>
             <FormControl>
               <FormControl.Label>Message</FormControl.Label>
-              <TextArea onChangeText={value => setFormData({ ...formData, text: value })} h={40} placeholder="Enter your message"/>
+              <TextArea onChangeText={value => setFormData({ ...formData, text: value })} h={40} placeholder="Enter your message" />
             </FormControl>
           </Modal.Body>
           <Modal.Footer>
@@ -59,5 +60,6 @@ export default function CreatePost ({ id }) {
 }
 
 CreatePost.propTypes = {
-  id: propTypes.number.isRequired
+  id: propTypes.number.isRequired,
+  getPosts: propTypes.func.isRequired
 }
