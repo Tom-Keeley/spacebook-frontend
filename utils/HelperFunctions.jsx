@@ -40,7 +40,7 @@ export const logOut = async (token, setErrorAlertProps) => {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
         'X-Authorization': token
       }
     })
@@ -550,6 +550,43 @@ export const getUsersFriends = async (token, id, setErrorAlertProps) => {
       }
       case (403): {
         setErrorAlertProps('Error', 'You can only view the friends of yourself or your friends', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// Create a new post POST
+export const createNewPost = async (token, id, text, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      },
+      body: JSON.stringify({
+        text: text
+      })
+    })
+
+    switch (response.status) {
+      case (201): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
         return { success: false }
       }
       case (404): {

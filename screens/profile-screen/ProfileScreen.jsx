@@ -43,7 +43,7 @@ export default function ProfileScreen ({ route, navigation }) {
       <VStack >
         {renderComponents()}
       </VStack>
-      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost /> : null}
+      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} /> : null}
     </Center>
   )
 }
