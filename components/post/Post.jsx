@@ -4,8 +4,8 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import { likeAPost, removeLikeFromAPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
-
-export default function Post ({ id, post }) {
+import PostOptions from '../post-options/PostOptions'
+export default function Post ({ id, post, getPosts }) {
   const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const [postLikes, setPostLikes] = useState(0)
   const [likedPost, setLikedPost] = useState(false)
@@ -47,7 +47,10 @@ export default function Post ({ id, post }) {
   return (
     <Box m={2} p={2} minH={100} borderRadius={'5'} shadow={'5'}>
       <VStack>
-        <Text bold>{`${post.author.first_name} ${post.author.last_name}`}</Text>
+        <HStack width={'100%'} justifyContent={'space-between'}>
+          <Text bold>{`${post.author.first_name} ${post.author.last_name}`}</Text>
+          <PostOptions id={id} postId={post.post_id} getPosts={getPosts} />
+        </HStack>
         <Text>{`Posted: ${post.timestamp}`}</Text>
         <Text>{post.text}</Text>
         <Center w='100%'>
@@ -63,5 +66,6 @@ export default function Post ({ id, post }) {
 
 Post.propTypes = {
   id: propTypes.number.isRequired,
-  post: propTypes.object.isRequired
+  post: propTypes.object.isRequired,
+  getPosts: propTypes.func.isRequired
 }

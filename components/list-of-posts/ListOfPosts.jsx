@@ -11,14 +11,17 @@ export default function ListOfPosts ({ id }) {
   const [posts, setPosts] = useState([])
 
   useEffect(async () => {
-    const results = await getPostsForAUser(token, id, setErrorAlertProps)
-    console.log(results)
-    setPosts(results.posts)
+    getPosts()
   }, [])
+
+  const getPosts = async () => {
+    const results = await getPostsForAUser(token, id, setErrorAlertProps)
+    setPosts(results.posts)
+  }
 
   return (
     <Box safeArea bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
-      {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} />) })}
+      {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} getPosts={getPosts}/>) })}
     </Box>
   )
 }

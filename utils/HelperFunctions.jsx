@@ -646,7 +646,6 @@ export const getPostsForAUser = async (token, id, setErrorAlertProps) => {
 
 // Like a post POST
 export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
-  console.log('in method')
   try {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}/like`, {
       method: 'POST',
@@ -655,7 +654,6 @@ export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
         'X-Authorization': token
       }
     })
-    console.log(response)
     switch (response.status) {
       case (200): {
         return { success: true }
@@ -686,7 +684,7 @@ export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
   }
 }
 
-// Remove a like from a post DELTE
+// Remove a like from a post DELETE
 export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps) => {
   try {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}/like`, {
@@ -707,6 +705,43 @@ export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps)
       }
       case (403): {
         setErrorAlertProps('Error', 'You have not liked this post', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+  }
+}
+
+// Delete a post DELETE
+export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+    switch (response.status) {
+      case (200): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'You can only delete your own posts', true)
         return { success: false }
       }
       case (404): {
