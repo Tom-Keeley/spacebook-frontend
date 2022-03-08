@@ -72,7 +72,9 @@ export default function LoginForm ({ navigation }) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: 'postman@mmu.ac.uk',
+          // email: 'postman@mmu.ac.uk',
+          // password: 'Testing1%'
+          email: 'ok@mmu.com',
           password: 'Testing1%'
         })
       })
