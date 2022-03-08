@@ -9,12 +9,13 @@ import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 import ProfileInformation from '../../components/profile-information/ProfileInformation'
 import PersonalDetails from '../../components/personal-details/PersonalDetails'
 import CreatePost from '../../components/create-post/CreatePost'
+import ListOfPosts from '../../components/list-of-posts/ListOfPosts'
 
 // ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function ProfileScreen ({ route, navigation }) {
-  const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
+  const { loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType, userId } = useContext(SpaceBookContext)
   const { id, buttonLocation, userFirstName, userLastName } = route.params
   console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
 
@@ -25,12 +26,14 @@ export default function ProfileScreen ({ route, navigation }) {
           <ProfileInformation profileType={profileType} />
           <PersonalDetails />
           <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
+          <ListOfPosts id={userId} />
         </>
       )
     } else if (profileType === 'userProfile') {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
+          {buttonLocation === 'friend' ? <ListOfPosts id={id} /> : null}
         </>
       )
     }

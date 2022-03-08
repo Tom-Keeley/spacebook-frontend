@@ -55,11 +55,11 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
       )
     } else if (profileType === 'userProfile') {
       return (
-        <>
-          <Center><Text fontSize="3xl">{`${userFirstName} ${userLastName}`}</Text></Center>
+        <Center>
+          <Text fontSize="3xl">{`${userFirstName} ${userLastName}`}</Text>
           {buttonLocation === 'friend' ? <MutualFriends id={id} /> : null }
           {buttonLocation === 'user' ? <Button onPress={addFriend} variant={buttonVariant} leftIcon={buttonIcon}>{buttonText}</Button> : null}
-        </>
+        </Center>
       )
     }
   }

@@ -13,7 +13,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
   const toast = useToast()
 
   const newFriendRequest = async () => {
-    const response = await sendFriendRequest(token, setErrorAlertProps, id)
+    const response = await sendFriendRequest(token, id, setErrorAlertProps)
     if (response.success === true) {
       setButtonDisabled(true)
       toast.show({

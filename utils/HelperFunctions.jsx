@@ -563,6 +563,7 @@ export const getUsersFriends = async (token, id, setErrorAlertProps) => {
     }
   } catch (err) {
     console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
 
@@ -600,6 +601,83 @@ export const createNewPost = async (token, id, text, setErrorAlertProps) => {
     }
   } catch (err) {
     console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+  }
+}
+
+// Get a list of posts for a user GET
+export const getPostsForAUser = async (token, id, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+
+    switch (response.status) {
+      case (200): {
+        const posts = await response.json()
+        return { success: true, posts: posts }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'You can only view the posts of yourself or your friends', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+  }
+}
+
+// Like a post POST
+export const likeAPost = async (token, Id, postId, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${Id}/post/${postId}/like`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-Authorization': token
+      }
+    })
+    switch (response.status) {
+      case (200): {
+        return { success: true }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'You have already liked this post', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
 
