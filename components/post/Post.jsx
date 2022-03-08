@@ -5,7 +5,7 @@ import { likeAPost, removeLikeFromAPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 import PostOptions from '../post-options/PostOptions'
-export default function Post ({ id, post, getPosts }) {
+export default function Post ({ id, post, getPosts, updateUserPost }) {
   const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const [postLikes, setPostLikes] = useState(0)
   const [likedPost, setLikedPost] = useState(false)
@@ -48,7 +48,7 @@ export default function Post ({ id, post, getPosts }) {
       <VStack>
         <HStack width={'100%'} justifyContent={'space-between'}>
           <Text bold>{`${post.author.first_name} ${post.author.last_name}`}</Text>
-          <PostOptions id={id} postId={post.post_id} getPosts={getPosts} />
+          <PostOptions id={id} postId={post.post_id} getPosts={getPosts} updateUserPost={updateUserPost} post={post} />
         </HStack>
         <Text>{`Posted: ${post.timestamp}`}</Text>
         <Text>{post.text}</Text>

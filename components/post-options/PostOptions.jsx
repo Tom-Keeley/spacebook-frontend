@@ -5,7 +5,7 @@ import { deleteUserPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 
-export default function PostOptions ({ id, postId, getPosts }) {
+export default function PostOptions ({ id, postId, getPosts, updateUserPost, post }) {
   const { token, setErrorAlertProps } = useContext(SpaceBookContext)
   const toast = useToast()
 
@@ -27,7 +27,7 @@ export default function PostOptions ({ id, postId, getPosts }) {
         <SimpleLineIcons name="options-vertical" size={24} color="black" />
       </Pressable>
     }}>
-      <Menu.Item>Edit Post</Menu.Item>
+      <Menu.Item onPress={() => updateUserPost(true, post)}>Edit Post</Menu.Item>
       <Menu.Item onPress={deletePost}>Delete Post</Menu.Item>
     </Menu>
   )

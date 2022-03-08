@@ -759,6 +759,52 @@ export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
   }
 }
 
+// Update a post PATCH
+export const updateAPost = async (token, id, postId, text, setErrorAlertProps) => {
+  try {
+    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      },
+      body: JSON.stringify({
+        text: text
+      })
+    })
+
+    switch (response.status) {
+      case (200): {
+        return { success: true }
+      }
+      case (400): {
+        setErrorAlertProps('Bad Request', 'Bad request please try again', true)
+        return { success: false }
+      }
+      case (401): {
+        setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
+        return { success: false }
+      }
+      case (403): {
+        setErrorAlertProps('Error', 'You can only update your own posts', true)
+        return { success: false }
+      }
+      case (404): {
+        setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
+        return { success: false }
+      }
+      case (500): {
+        setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
+        return { success: false }
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    setErrorAlertProps('Error', 'Error occured please try again later', true)
+  }
+}
+
 // MISC
 export const getNumOfFriendRequests = async (token, setErrorAlertProps) => {
   try {

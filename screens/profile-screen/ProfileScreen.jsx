@@ -18,6 +18,8 @@ export default function ProfileScreen ({ route, navigation }) {
   const { token, userId, setErrorAlertProps, loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
   const { id, buttonLocation, userFirstName, userLastName } = route.params
   const [posts, setPosts] = useState([])
+  const [updatePost, setUpdatePost] = useState(false)
+  const [postToUpdate, setPostToUpdate] = useState({})
   console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
 
   const getPosts = async () => {
@@ -29,6 +31,15 @@ export default function ProfileScreen ({ route, navigation }) {
       setPosts(results.posts)
     }
   }
+
+  const updateUserPost = (update, post) => {
+    setUpdatePost(update)
+    setPostToUpdate(post)
+  }
+
+  useEffect(() => {
+    console.log(updatePost)
+  }, [updatePost])
 
   useEffect(() => {
     getPosts()
@@ -48,7 +59,7 @@ export default function ProfileScreen ({ route, navigation }) {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
-          {buttonLocation === 'friend' ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} /> : null}
+          {buttonLocation === 'friend' ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost} /> : null}
         </>
       )
     }
@@ -63,7 +74,7 @@ export default function ProfileScreen ({ route, navigation }) {
           {renderComponents()}
         </VStack>
       </ScrollView>
-      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} getPosts={getPosts} /> : null}
+      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/> : null}
     </Center>
   )
 }

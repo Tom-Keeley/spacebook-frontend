@@ -1,17 +1,29 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Fab, Icon, Modal, FormControl, Button, TextArea, AddIcon, useToast } from 'native-base'
-import { AntDesign } from '@expo/vector-icons'
-import { createNewPost } from '../../utils/HelperFunctions'
+import { AntDesign, FontAwesome } from '@expo/vector-icons'
+import { createNewPost, updateAPost } from '../../utils/HelperFunctions'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import ErrorPopup from '../error-popup/ErrorPopup'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 
-export default function CreatePost ({ id, getPosts }) {
+export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, postToUpdate }) {
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
   const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible } = useContext(SpaceBookContext)
   const toast = useToast()
+
+  useEffect(() => {
+    if (updatePost === true) {
+      setShowModal(true)
+    }
+  }, [updatePost])
+
+  useEffect(() => {
+    if (showModal === false) {
+      setUpdatePost(false)
+    }
+  }, [showModal])
 
   const addPost = async () => {
     setLoadingSpinnerVisible(true)
@@ -28,6 +40,19 @@ export default function CreatePost ({ id, getPosts }) {
     }
   }
 
+  const updateUserPost = async () => {
+    const result = await updateAPost(token, id, postToUpdate.post_id, formData.text, setErrorAlertProps)
+    if (result.success === true) {
+      toast.show({
+        title: 'Updated Post',
+        status: 'success',
+        placement: 'top'
+      })
+    }
+    setShowModal(false)
+    getPosts()
+  }
+
   return (
     <>
       {loadingSpinnerVisible && <LoadingSpinner />}
@@ -36,11 +61,11 @@ export default function CreatePost ({ id, getPosts }) {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          <Modal.Header>New Post</Modal.Header>
+          <Modal.Header>{updatePost === false ? 'New Post' : 'Update Post'}</Modal.Header>
           <Modal.Body>
             <FormControl>
               <FormControl.Label>Message</FormControl.Label>
-              <TextArea onChangeText={value => setFormData({ ...formData, text: value })} h={40} placeholder="Enter your message" />
+              <TextArea defaultValue={updatePost === false ? null : postToUpdate.text} onChangeText={value => setFormData({ ...formData, text: value })} h={40} placeholder="Enter your message" />
             </FormControl>
           </Modal.Body>
           <Modal.Footer>
@@ -48,8 +73,8 @@ export default function CreatePost ({ id, getPosts }) {
               <Button variant="ghost" colorScheme="blueGray" onPress={() => { setShowModal(false) }}>
                 Cancel
               </Button>
-              <Button onPress={addPost} leftIcon={<AddIcon size="4" />}>
-                Add Post
+              <Button onPress={updatePost === false ? addPost : updateUserPost} leftIcon={updatePost === false ? <AddIcon size="4" /> : <FontAwesome name="upload" color="white" />}>
+                {updatePost === false ? 'Add Post' : 'Update'}
               </Button>
             </Button.Group>
           </Modal.Footer>
@@ -61,5 +86,5 @@ export default function CreatePost ({ id, getPosts }) {
 
 CreatePost.propTypes = {
   id: propTypes.number.isRequired,
-  getPosts: propTypes.func.isRequired
+  getPosts: propTypes.func.isRequired,
 }
