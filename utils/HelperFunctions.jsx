@@ -724,6 +724,7 @@ export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps)
 
 // Delete a post DELETE
 export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
+  console.log(id + ' ' + postId)
   try {
     const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
       method: 'DELETE',
@@ -732,23 +733,29 @@ export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
         'X-Authorization': token
       }
     })
+    console.log(response)
     switch (response.status) {
       case (200): {
+        console.log('here')
         return { success: true }
       }
       case (401): {
+        console.log('here')
         setErrorAlertProps('Unauthorised', 'You are not authorised to perform this action please log in', true)
         return { success: false }
       }
       case (403): {
+        console.log('here')
         setErrorAlertProps('Error', 'You can only delete your own posts', true)
         return { success: false }
       }
       case (404): {
+        console.log('here')
         setErrorAlertProps('User Not Found', 'Unable to find user please try again', true)
         return { success: false }
       }
       case (500): {
+        console.log('here')
         setErrorAlertProps('Server Error', 'Server error occured please try again later', true)
         return { success: false }
       }

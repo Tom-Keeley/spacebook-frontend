@@ -66,6 +66,14 @@ export default function ProfileScreen ({ route, navigation }) {
     }
   }
 
+  const renderCreateButton = () => {
+    if (profileType === 'userProfile' && buttonLocation === 'friend') {
+      return <CreatePost id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
+    } else if (profileType === 'personal') {
+      return <CreatePost id={userId} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
+    }
+  }
+
   return (
     <Center w={'100%'} h={'100%'}>
       {profileType === 'userProfile' ? <BackButton navigation={navigation} /> : null}
@@ -76,7 +84,7 @@ export default function ProfileScreen ({ route, navigation }) {
           {renderComponents()}
         </VStack>
       </ScrollView>
-      {profileType === 'userProfile' && buttonLocation === 'friend' ? <CreatePost id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/> : null}
+      {renderCreateButton()}
     </Center>
   )
 }

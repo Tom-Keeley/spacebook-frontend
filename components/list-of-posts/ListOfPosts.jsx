@@ -17,11 +17,6 @@ export default function ListOfPosts ({ id, getPosts, posts, updateUserPost }) {
     setViewPostVisible(true)
   }
 
-  useEffect(() => {
-    console.log(singlePostData)
-    console.log(viewPostVisible)
-  }, [singlePostData])
-
   return (
     <>
       {viewPostVisible ? <ViewPost postData={singlePostData} viewPostVisible={viewPostVisible} setViewPostVisible={setViewPostVisible} /> : null}
