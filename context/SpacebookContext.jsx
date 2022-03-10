@@ -46,16 +46,9 @@ export default function SpaceBookContextProvider ({ children }) {
   const [totalFriendRequests, setTotalFriendRequests] = useState(0)
 
   useEffect(() => {
-  }, [totalFriendRequests])
-
-  useEffect(() => {
     console.log('TOKEN')
     console.log(token)
   }, [token])
-
-  useEffect(() => {
-    console.log(loadingSpinnerVisible)
-  }, [loadingSpinnerVisible])
 
   return (
     <SpaceBookContext.Provider value={{
