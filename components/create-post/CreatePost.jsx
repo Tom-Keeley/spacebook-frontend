@@ -87,4 +87,7 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
 CreatePost.propTypes = {
   id: propTypes.number.isRequired,
   getPosts: propTypes.func.isRequired,
+  updatePost: propTypes.bool.isRequired,
+  setUpdatePost: propTypes.func.isRequired,
+  postToUpdate: propTypes.object.isRequired
 }

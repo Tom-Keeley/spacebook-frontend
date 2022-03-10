@@ -36,5 +36,7 @@ export default function PostOptions ({ id, postId, getPosts, updateUserPost, pos
 PostOptions.propTypes = {
   id: propTypes.number.isRequired,
   postId: propTypes.number.isRequired,
-  getPosts: propTypes.func.isRequired
+  getPosts: propTypes.func.isRequired,
+  updateUserPost: propTypes.func.isRequired,
+  post: propTypes.object.isRequired
 }
