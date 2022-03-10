@@ -53,14 +53,14 @@ export default function ProfileScreen ({ route, navigation }) {
           <ProfileInformation profileType={profileType} />
           <PersonalDetails />
           <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
-          <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/>
+          { posts.length !== 0 ? <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
         </>
       )
     } else if (profileType === 'userProfile') {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
-          {buttonLocation === 'friend' ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost} /> : null}
+          { posts.length !== 0 ? <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
         </>
       )
     }
