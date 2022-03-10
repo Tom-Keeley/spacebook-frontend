@@ -10,6 +10,7 @@ import ProfileInformation from '../../components/profile-information/ProfileInfo
 import PersonalDetails from '../../components/personal-details/PersonalDetails'
 import CreatePost from '../../components/create-post/CreatePost'
 import ListOfPosts from '../../components/list-of-posts/ListOfPosts'
+import BackButton from '../../components/back-button/BackButton'
 import { getPostsForAUser } from '../../utils/HelperFunctions'
 
 // ContextAPI
@@ -67,6 +68,7 @@ export default function ProfileScreen ({ route, navigation }) {
 
   return (
     <Center w={'100%'} h={'100%'}>
+      {profileType === 'userProfile' ? <BackButton navigation={navigation} /> : null}
       <ScrollView h="500">
         {errorAlertVisible && <ErrorPopup />}
         {loadingSpinnerVisible && <LoadingSpinner />}

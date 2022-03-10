@@ -47,13 +47,10 @@ export default function Post ({ id, post, getPosts, updateUserPost, viewPost }) 
 
   const renderText = () => {
     if (postText.length > 40) {
-      console.log('here')
       return (
         <Text>{postText.substr(0, 40)} ...<Text color={'primary.400'}>See More</Text></Text>
       )
     } else {
-      console.log('here')
-      console.log(postText.length)
       return (
       <Text>{postText}</Text>
       )
