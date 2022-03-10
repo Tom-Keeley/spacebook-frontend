@@ -52,7 +52,7 @@ export default function ProfileScreen ({ route, navigation }) {
           <ProfileInformation profileType={profileType} />
           <PersonalDetails />
           <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
-          <ListOfPosts id={userId} getPosts={getPosts} posts={posts}/>
+          <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/>
         </>
       )
     } else if (profileType === 'userProfile') {

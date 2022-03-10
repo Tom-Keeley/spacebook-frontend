@@ -1,17 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from 'native-base'
 import propTypes from 'prop-types'
+import ViewPost from '../view-post/ViewPost'
 
 import Post from '../post/Post'
 export default function ListOfPosts ({ id, getPosts, posts, updateUserPost }) {
+  const [singlePostData, setSinglePostData] = useState({})
+  const [viewPostVisible, setViewPostVisible] = useState(false)
+
   useEffect(async () => {
     getPosts()
   }, [])
 
+  const viewPost = (id, postId) => {
+    setSinglePostData({ id: id, postId: postId })
+    setViewPostVisible(true)
+  }
+
+  useEffect(() => {
+    console.log(singlePostData)
+    console.log(viewPostVisible)
+  }, [singlePostData])
+
   return (
-    <Box safeArea bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
-      {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} getPosts={getPosts} updateUserPost={updateUserPost}/>) })}
-    </Box>
+    <>
+      {viewPostVisible ? <ViewPost postData={singlePostData} viewPostVisible={viewPostVisible} setViewPostVisible={setViewPostVisible} /> : null}
+      <Box safeArea bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
+        {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} getPosts={getPosts} updateUserPost={updateUserPost} viewPost={viewPost}/>) })}
+      </Box>
+    </>
   )
 }
 
