@@ -64,7 +64,6 @@ export default function ChangeProfilePicture ({ setImage }) {
 
   // Select profile picture from gallery
   const selectProfilePicture = async () => {
-    console.log('worked')
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

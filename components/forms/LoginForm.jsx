@@ -94,7 +94,6 @@ export default function LoginForm ({ navigation }) {
         }
       }
     } catch (err) {
-      console.log(err)
       console.log('Error signing in')
     }
   }

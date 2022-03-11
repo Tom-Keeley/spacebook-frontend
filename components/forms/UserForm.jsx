@@ -105,12 +105,9 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
 
   // Send sign up request to user
   const signUpNewUser = async () => {
-    console.log(formData)
     setLoadingSpinnerVisible(true)
     const response = await signUp(setErrorAlertProps, formData)
-    console.log(response)
     if (response.success === true) {
-      console.log('here')
       setToken(response.token)
       setUserId(response.userId)
       setLoadingSpinnerVisible(false)

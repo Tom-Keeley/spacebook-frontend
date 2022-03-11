@@ -32,7 +32,6 @@ export const login = async (setErrorAlertProps, formData) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
     return { success: false }
   }
@@ -61,7 +60,6 @@ export const logOut = async (token, setErrorAlertProps) => {
         return { success: false }
     }
   } catch (err) {
-    console.log(err)
     return { success: false }
   }
 }
@@ -170,7 +168,6 @@ export const editDetails = async (token, userId, setErrorAlertProps, formData) =
     }
   } catch (err) {
     setErrorAlertProps(`${err.message}`, 'Failed to edit details please try again', true)
-    console.log('catch error')
     return { success: false }
   }
 }
@@ -205,7 +202,6 @@ export const getUserDetails = async (token, userId, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'An error occured please try again later', true)
   }
 }
@@ -239,7 +235,6 @@ export const getUserProfilePic = async (token, userId, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'An error occured please try again later', true)
     return { success: false }
   }
@@ -278,7 +273,6 @@ export const uploadProfilePicture = async (token, userId, setErrorAlertProps, da
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'An error occured please try again later', true)
     return { success: false }
   }
@@ -318,7 +312,6 @@ export const getFriends = async (token, userId, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'An error occured please try again later', true)
     return { success: false }
   }
@@ -350,7 +343,6 @@ export const getfriendRequests = async (token, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }
@@ -382,7 +374,6 @@ export const searchUsers = async (token, setErrorAlertProps, searchIn, searchVal
     }
   } catch (err) {
     setErrorAlertProps('Error', 'An error occured please try again later', true)
-    console.log(err)
     return { success: false }
   }
 }
@@ -455,7 +446,6 @@ export const sendFriendRequest = async (token, id, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }
@@ -491,7 +481,6 @@ export const acceptFriendRequest = async (token, setErrorAlertProps, id) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }
@@ -527,7 +516,6 @@ export const rejectFriendRequest = async (token, id, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }
@@ -567,7 +555,6 @@ export const getUsersFriends = async (token, id, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -605,7 +592,6 @@ export const createNewPost = async (token, id, text, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -644,7 +630,6 @@ export const getPostsForAUser = async (token, id, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -684,7 +669,6 @@ export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -722,14 +706,12 @@ export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps)
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
 
 // Delete a post DELETE
 export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
-  console.log(id + ' ' + postId)
   try {
     const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}`, {
       method: 'DELETE',
@@ -738,7 +720,6 @@ export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
         'X-Authorization': token
       }
     })
-    console.log(response)
     switch (response.status) {
       case (200): {
         return { success: true }
@@ -765,7 +746,6 @@ export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -811,7 +791,6 @@ export const updateAPost = async (token, id, postId, text, setErrorAlertProps) =
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -850,7 +829,6 @@ export const viewASinglePost = async (token, id, postId, setErrorAlertProps) => 
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
   }
 }
@@ -881,7 +859,6 @@ export const getNumOfFriendRequests = async (token, setErrorAlertProps) => {
       }
     }
   } catch (err) {
-    console.log(err)
     setErrorAlertProps('Error', 'Error occured please try again later', true)
     return { success: false }
   }

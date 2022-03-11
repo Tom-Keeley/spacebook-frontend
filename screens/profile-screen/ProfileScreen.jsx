@@ -27,13 +27,11 @@ export default function ProfileScreen ({ route, navigation }) {
 
   // Get a list of posts for a user
   const getPosts = async () => {
-    console.log(profileType)
     if (profileType === 'personal') {
       const results = await getPostsForAUser(token, userId, setErrorAlertProps)
       const posts = results.posts
       setPosts(posts)
     } else if (profileType === 'userProfile') {
-      console.log(id)
       const results = await getPostsForAUser(token, id, setErrorAlertProps)
       setPosts(results.posts)
     }

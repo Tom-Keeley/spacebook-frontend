@@ -83,10 +83,10 @@ export default function DraftMenu ({ text, setTextAreaDefaultText }) {
         </HStack>
       </ScrollView>
       <HStack>
-        <Checkbox onChange={value => { setSelectADate(value) }} />
+        <Checkbox onChange={value => { setSelectADate(value) }}></Checkbox>
         <Text> Select a date/time to publish?</Text>
       </HStack>
-        {selectADate === true ? <SelectDate /> : null}
+        {selectADate === true ? <SelectDate text={text} /> : null}
     </Box>
   )
 }

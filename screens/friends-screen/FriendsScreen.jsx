@@ -28,7 +28,6 @@ export default function FriendsScreen ({ navigation }) {
   // Get data when page loads
   useEffect(async () => {
     const friendsResponse = await getUsersPaginated(token, setErrorAlertProps, 'friends', pagination, offset)
-    console.log(friendsResponse)
     if (friendsResponse.success === true) {
       setFriends(friendsResponse.users)
     }
