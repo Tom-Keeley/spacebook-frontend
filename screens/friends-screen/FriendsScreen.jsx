@@ -10,10 +10,10 @@ import { SpaceBookContext } from '../../context/SpacebookContext'
 import SearchOptions from '../../components/search-options/SearchOptions'
 import UserCard from '../../components/user-card/UserCard'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
-import { getfriendRequests, getFriends, getUsersPaginated, searchUsers } from '../../utils/HelperFunctions'
+import { getfriendRequests, getUsersPaginated, searchUsers } from '../../utils/HelperFunctions'
 
 export default function FriendsScreen ({ navigation }) {
-  const { pagination, token, userId, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
+  const { pagination, token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
   // State values for this component
   const [radioValue, setRadioValue] = useState('all')
@@ -26,9 +26,10 @@ export default function FriendsScreen ({ navigation }) {
 
   // Get data when page loads
   useEffect(async () => {
-    const friendsResponse = await getFriends(token, userId, setErrorAlertProps)
+    const friendsResponse = await getUsersPaginated(token, setErrorAlertProps, 'friends', pagination, offset)
+    console.log(friendsResponse)
     if (friendsResponse.success === true) {
-      setFriends(friendsResponse.friends)
+      setFriends(friendsResponse.users)
     }
 
     const friendRequestResponse = await getfriendRequests(token, setErrorAlertProps)
