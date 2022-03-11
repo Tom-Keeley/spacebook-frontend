@@ -29,7 +29,6 @@ export default function HomeScreen () {
 
   useEffect(() => {
     renderTabBadge()
-    console.log(totalFriendRequests)
   }, [totalFriendRequests])
 
   return (

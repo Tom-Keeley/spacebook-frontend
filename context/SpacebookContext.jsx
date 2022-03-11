@@ -39,7 +39,7 @@ export default function SpaceBookContextProvider ({ children }) {
   // Number of friend requests
   const numOfFriendRequests = async (token, setErrorAlertProps) => {
     const response = await getNumOfFriendRequests(token, setErrorAlertProps)
-    if (response.success === true && response.num > 0) {
+    if (response.success === true) {
       setTotalFriendRequests(response.num)
     }
   }
