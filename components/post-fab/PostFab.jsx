@@ -109,7 +109,7 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
               <FormControl.Label>Message</FormControl.Label>
               <TextArea value={textAreaValue} onChangeText={value => setTextAreaValue(value)} h={40} placeholder="Enter your message" />
             </FormControl>
-            {formData.text ? <DraftMenu text={formData.text} setTextAreaDefaultText={setTextAreaDefaultText}/> : null}
+            <DraftMenu text={formData.text} setTextAreaDefaultText={setTextAreaDefaultText}/>
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>

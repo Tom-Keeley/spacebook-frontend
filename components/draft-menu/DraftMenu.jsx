@@ -73,7 +73,7 @@ export default function DraftMenu ({ text, setTextAreaDefaultText }) {
 
   return (
     <Box my='1' justifyContent={'center'}>
-      <Button onPress={() => saveDraft()} leftIcon={<FontAwesome name="save" size={24} color="white" />}>Save Draft</Button>
+      {text !== '' ? <Button onPress={() => saveDraft()} leftIcon={<FontAwesome name="save" size={24} color="white" />}>Save Draft</Button> : null}
       <ScrollView horizontal>
         <HStack>
           {draftPosts.map(draft => <Draft key={draft.id} id={draft.id} text={draft.text} setTextAreaDefaultText={setTextAreaDefaultText} deleteDraft={deleteDraft} selectedDraft={selectedDraft} setSelectedDraft={setSelectedDraft}/>)}
