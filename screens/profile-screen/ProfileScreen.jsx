@@ -8,7 +8,7 @@ import ErrorPopup from '../../components/error-popup/ErrorPopup'
 import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
 import ProfileInformation from '../../components/profile-information/ProfileInformation'
 import PersonalDetails from '../../components/personal-details/PersonalDetails'
-import CreatePost from '../../components/create-post/CreatePost'
+import PostFab from '../../components/post-fab/PostFab'
 import ListOfPosts from '../../components/list-of-posts/ListOfPosts'
 import BackButton from '../../components/back-button/BackButton'
 import { getPostsForAUser } from '../../utils/HelperFunctions'
@@ -68,9 +68,9 @@ export default function ProfileScreen ({ route, navigation }) {
 
   const renderCreateButton = () => {
     if (profileType === 'userProfile' && buttonLocation === 'friend') {
-      return <CreatePost id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
+      return <PostFab id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
     } else if (profileType === 'personal') {
-      return <CreatePost id={userId} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
+      return <PostFab id={userId} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>
     }
   }
 

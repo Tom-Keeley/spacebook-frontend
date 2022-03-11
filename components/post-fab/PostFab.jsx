@@ -6,10 +6,12 @@ import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import ErrorPopup from '../error-popup/ErrorPopup'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
+import DraftMenu from '../draft-menu/DraftMenu'
 
 export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, postToUpdate }) {
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
+  const [textAreaValue, setTextAreaValue] = useState('')
   const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible } = useContext(SpaceBookContext)
   const toast = useToast()
 
@@ -53,6 +55,28 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
     getPosts()
   }
 
+  const setTextAreaDefaultText = (draft, text) => {
+    if (draft === true) {
+      setTextAreaValue(text)
+    } else if (draft === false) {
+      if (updatePost === false) {
+        setTextAreaValue(null)
+      } else if (updatePost === true) {
+        setTextAreaValue(postToUpdate.text)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (updatePost === true) {
+      setTextAreaDefaultText(false, null)
+    }
+  }, [updatePost])
+
+  useEffect(() => {
+    setFormData({ ...formData, text: textAreaValue })
+  }, [textAreaValue])
+
   return (
     <>
       {loadingSpinnerVisible && <LoadingSpinner />}
@@ -65,8 +89,9 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
           <Modal.Body>
             <FormControl>
               <FormControl.Label>Message</FormControl.Label>
-              <TextArea defaultValue={updatePost === false ? null : postToUpdate.text} onChangeText={value => setFormData({ ...formData, text: value })} h={40} placeholder="Enter your message" />
+              <TextArea value={textAreaValue} onChangeText={value => setTextAreaValue(value)} h={40} placeholder="Enter your message" />
             </FormControl>
+            {formData.text ? <DraftMenu text={formData.text} setTextAreaDefaultText={setTextAreaDefaultText}/> : null}
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
