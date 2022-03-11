@@ -4,12 +4,13 @@ import { SimpleLineIcons } from '@expo/vector-icons'
 import { deleteUserPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
-
+import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 export default function PostOptions ({ id, postId, getPosts, updateUserPost, post }) {
-  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
   const toast = useToast()
 
   const deletePost = async () => {
+    setLoadingSpinnerVisible(true)
     const response = await deleteUserPost(token, id, postId, setErrorAlertProps)
     if (response.success === true) {
       getPosts()
@@ -19,17 +20,21 @@ export default function PostOptions ({ id, postId, getPosts, updateUserPost, pos
         placement: 'top'
       })
     }
+    setLoadingSpinnerVisible(false)
   }
 
   return (
-    <Menu mx={2} shadow={2} trigger={triggerProps => {
-      return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-        <SimpleLineIcons name="options-vertical" size={24} color="black" />
-      </Pressable>
-    }}>
-      <Menu.Item onPress={() => updateUserPost(true, post)}>Edit Post</Menu.Item>
-      <Menu.Item onPress={deletePost}>Delete Post</Menu.Item>
-    </Menu>
+    <>
+      <LoadingSpinner />
+      <Menu mx={2} shadow={2} trigger={triggerProps => {
+        return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+          <SimpleLineIcons name="options-vertical" size={24} color="black" />
+        </Pressable>
+      }}>
+        <Menu.Item onPress={() => updateUserPost(true, post)}>Edit Post</Menu.Item>
+        <Menu.Item onPress={deletePost}>Delete Post</Menu.Item>
+      </Menu>
+    </>
   )
 }
 
