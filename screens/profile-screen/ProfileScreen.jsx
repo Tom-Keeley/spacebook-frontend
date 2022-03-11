@@ -29,6 +29,7 @@ export default function ProfileScreen ({ route, navigation }) {
       const posts = results.posts
       setPosts(posts)
     } else if (profileType === 'userProfile') {
+      console.log(id)
       const results = await getPostsForAUser(token, id, setErrorAlertProps)
       setPosts(results.posts)
     }
@@ -57,7 +58,7 @@ export default function ProfileScreen ({ route, navigation }) {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
-          { posts.length !== 0 ? <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
+          { posts.length !== 0 ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
         </>
       )
     }

@@ -8,7 +8,7 @@ import { sendFriendRequest, acceptFriendRequest, rejectFriendRequest } from '../
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests, navigation }) {
-  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests, setProfileType } = useContext(SpaceBookContext)
+  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests, setProfileType, loadingSpinnerVisible, setloadingSpinnerVisible } = useContext(SpaceBookContext)
   const [buttonDisabled, setButtonDisabled] = useState(false)
   const toast = useToast()
 
