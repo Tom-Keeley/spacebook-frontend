@@ -33,6 +33,7 @@ export default function ProfileScreen ({ route, navigation }) {
       setPosts(posts)
     } else if (profileType === 'userProfile') {
       const results = await getPostsForAUser(token, id, setErrorAlertProps)
+      console.log(results)
       setPosts(results.posts)
     }
   }
@@ -50,20 +51,21 @@ export default function ProfileScreen ({ route, navigation }) {
 
   // Conditionally render componets based on if its the users own profile or another users
   const renderComponents = () => {
+    console.log(posts)
     if (profileType === 'personal') {
       return (
         <>
           <ProfileInformation profileType={profileType} />
           <PersonalDetails />
           <EditDetails navigation={navigation} firstName={firstName} lastName={lastName} email={email} />
-          { posts.length !== 0 ? <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
+          { typeof posts !== 'undefined' ? <ListOfPosts id={userId} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
         </>
       )
     } else if (profileType === 'userProfile') {
       return (
         <>
           <ProfileInformation profileType={profileType} id={id} buttonLocation={buttonLocation} userFirstName={userFirstName} userLastName={userLastName} />
-          { posts.length !== 0 ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
+          { typeof posts !== 'undefined' ? <ListOfPosts id={id} getPosts={getPosts} posts={posts} updateUserPost={updateUserPost}/> : null }
         </>
       )
     }
