@@ -4,6 +4,7 @@ import React, { useContext } from 'react'
 import { Box, Heading, VStack, Button } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import propTypes from 'prop-types'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // Custom imports
 import LoadingSpinner from '../../components/loading-spinner/LoadingSpinner'
@@ -20,6 +21,7 @@ export default function SettingsScreen ({ navigation }) {
     const response = await logOut(token, setErrorAlertProps)
     if (response.success === true) {
       setLoadingSpinnerVisible(false)
+      await AsyncStorage.removeItem('rememberMe')
       navigation.navigate('Welcome', { screen: 'Welcome-screen' })
     }
     setLoadingSpinnerVisible(false)

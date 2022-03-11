@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 
 // Package imports
-import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
+import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View, Checkbox } from 'native-base'
 import propTypes from 'prop-types'
 import * as EmailValidator from 'email-validator'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // Custom imports
 import ErrorPopup from '../error-popup/ErrorPopup'
@@ -16,6 +17,7 @@ export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
 
   // Context API
   const { setToken, setUserId, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, setProfileType } = useContext(SpaceBookContext)
@@ -61,6 +63,10 @@ export default function LoginForm ({ navigation }) {
 
   // Send log in request to server
   const loginUser = async () => {
+    if (rememberMe === true) {
+      const data = { email: formData.email, password: formData.password }
+      await AsyncStorage.setItem('rememberMe', JSON.stringify(data))
+    }
     setLoadingSpinnerVisible(true)
     const response = await login(setErrorAlertProps, formData)
     if (response.success === true) {
@@ -72,51 +78,29 @@ export default function LoginForm ({ navigation }) {
     }
   }
 
-  const bypass = async () => {
-    setLoadingSpinnerVisible(true)
+  const rememberMeLogin = async () => {
     try {
-      const response = await fetch('http://localhost:3333/api/1.0.0/login', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: 'postman@mmu.ac.uk',
-          password: 'Testing1%'
-          // email: 'ok@mmu.com',
-          // password: 'Testing1%'
-        })
-      })
-
-      switch (response.status) {
-        case 200: {
-          const json = await response.json()
-          setToken(json.token)
-          setUserId(json.id)
+      const jsonValue = await AsyncStorage.getItem('rememberMe')
+      if (jsonValue !== null) {
+        setLoadingSpinnerVisible(true)
+        const data = JSON.parse(jsonValue)
+        const response = await login(setErrorAlertProps, data)
+        if (response.success === true) {
+          setToken(response.token)
+          setUserId(response.userId)
           setLoadingSpinnerVisible(false)
+          setProfileType('personal')
           navigation.push('Home')
-          break
-        }
-        case 400: {
-          setErrorAlertProps('Unable to sign in', `${await response.text()}`, true)
-          setLoadingSpinnerVisible(false)
-          break
-        }
-        case 500: {
-          setErrorAlertProps('Server error', 'Failed to sign in please try again', true)
-          break
         }
       }
     } catch (err) {
       console.log(err)
-      setLoadingSpinnerVisible(false)
-      setErrorAlertProps(`${err.message}`, 'Failed to sign in please try again', true)
+      console.log('Error signing in')
     }
   }
 
   useEffect(() => {
-    bypass()
+    rememberMeLogin()
   }, [])
 
   return (
@@ -136,13 +120,16 @@ export default function LoginForm ({ navigation }) {
               <FormControl isRequired isInvalid={emailErrorReason.includes('Email')}>
                 <FormControl.Label>Email</FormControl.Label>
                 <Input placeholder="example@email.com" onChangeText={value => setData({ ...formData, email: value })} />
-                {emailErrorReason.includes('Email') ? <FormControl.ErrorMessage>{emailErrorReason}</FormControl.ErrorMessage> : null }
+                {emailErrorReason.includes('Email') ? <FormControl.ErrorMessage>{emailErrorReason}</FormControl.ErrorMessage> : null}
               </FormControl>
               <FormControl isRequired isInvalid={passwordErrorReason.includes('Password')}>
                 <FormControl.Label>Password</FormControl.Label>
-                <Input type="password" onChangeText={value => setData({ ...formData, password: value })}/>
+                <Input type="password" onChangeText={value => setData({ ...formData, password: value })} />
                 {passwordErrorReason.includes('Password') ? <FormControl.ErrorMessage>{passwordErrorReason}</FormControl.ErrorMessage> : null}
-                <Link _text={{ fontSize: 'xs', fontWeight: '500', color: 'indigo.500' }} alignSelf="flex-end" mt="1">Forget Password?</Link>
+                <HStack my={'1'}>
+                  <Checkbox onChange={value => setRememberMe(value)} shadow={2} value="test" accessibilityLabel="This is a dummy checkbox" />
+                  <Text> Remember me</Text>
+                </HStack>
               </FormControl>
               <Button mt="2" bg='title.bg' onPress={() => onSubmit()}>
                 Sign in
