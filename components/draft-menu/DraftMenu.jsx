@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 
 // Package imports
-import { Button, Box, HStack, ScrollView } from 'native-base'
+import { Button, Box, HStack, ScrollView, Checkbox, Text } from 'native-base'
 import { FontAwesome } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Draft from '../draft/Draft'
 import propTypes from 'prop-types'
 
+// Custom imports
+import Draft from '../draft/Draft'
+import SelectDate from '../select-date/SelectDate'
 export default function DraftMenu ({ text, setTextAreaDefaultText }) {
   // Local state
   const [draftPosts, setDraftPosts] = useState([])
   const [selectedDraft, setSelectedDraft] = useState(0)
+  const [selectADate, setSelectADate] = useState(false)
 
   // Fetch drafts on load
   useEffect(async () => {
@@ -79,6 +82,11 @@ export default function DraftMenu ({ text, setTextAreaDefaultText }) {
           {draftPosts.map(draft => <Draft key={draft.id} id={draft.id} text={draft.text} setTextAreaDefaultText={setTextAreaDefaultText} deleteDraft={deleteDraft} selectedDraft={selectedDraft} setSelectedDraft={setSelectedDraft}/>)}
         </HStack>
       </ScrollView>
+      <HStack>
+        <Checkbox onChange={value => { setSelectADate(value) }} />
+        <Text> Select a date/time to publish?</Text>
+      </HStack>
+        {selectADate === true ? <SelectDate /> : null}
     </Box>
   )
 }
