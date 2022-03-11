@@ -21,12 +21,13 @@ export default function ProfileScreen ({ route, navigation }) {
   const [posts, setPosts] = useState([])
   const [updatePost, setUpdatePost] = useState(false)
   const [postToUpdate, setPostToUpdate] = useState({})
-  console.log(profileType, ' ' + id + ' ' + userFirstName + ' ' + userLastName)
 
   const getPosts = async () => {
+    console.log(profileType)
     if (profileType === 'personal') {
       const results = await getPostsForAUser(token, userId, setErrorAlertProps)
-      setPosts(results.posts)
+      const posts = results.posts
+      setPosts(posts)
     } else if (profileType === 'userProfile') {
       const results = await getPostsForAUser(token, id, setErrorAlertProps)
       setPosts(results.posts)
@@ -37,10 +38,6 @@ export default function ProfileScreen ({ route, navigation }) {
     setUpdatePost(update)
     setPostToUpdate(post)
   }
-
-  useEffect(() => {
-    console.log(updatePost)
-  }, [updatePost])
 
   useEffect(() => {
     getPosts()

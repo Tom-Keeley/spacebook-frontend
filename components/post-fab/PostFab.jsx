@@ -43,16 +43,19 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
   }
 
   const updateUserPost = async () => {
+    setLoadingSpinnerVisible(true)
     const result = await updateAPost(token, id, postToUpdate.post_id, formData.text, setErrorAlertProps)
     if (result.success === true) {
+      console.log('here')
+      getPosts()
       toast.show({
         title: 'Updated Post',
         status: 'success',
         placement: 'top'
       })
     }
+    setLoadingSpinnerVisible(false)
     setShowModal(false)
-    getPosts()
   }
 
   const setTextAreaDefaultText = (draft, text) => {

@@ -17,11 +17,12 @@ export default function ListOfPosts ({ id, getPosts, posts, updateUserPost }) {
     setViewPostVisible(true)
   }
 
+  // Use text as the key to ensure that it is unique and so will always re render
   return (
     <>
       {viewPostVisible ? <ViewPost postData={singlePostData} viewPostVisible={viewPostVisible} setViewPostVisible={setViewPostVisible} /> : null}
       <Box safeArea bg={'white'} p={'5'} m={'2'} borderRadius={'5'} shadow={'5'}>
-        {posts.map(post => { return (<Post id={id} key={post.post_id} post={post} getPosts={getPosts} updateUserPost={updateUserPost} viewPost={viewPost}/>) })}
+        {posts.map(post => { return (<Post id={id} key={post.text} post={post} getPosts={getPosts} updateUserPost={updateUserPost} viewPost={viewPost}/>) })}
       </Box>
     </>
   )
