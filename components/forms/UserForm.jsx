@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
 import propTypes from 'prop-types'
+import * as EmailValidator from 'email-validator'
 
 // Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
@@ -50,7 +51,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     } else if (formData.email.length < 6) {
       passedValidation = false
       setEmailErrorReason('Email cannot be less than 6 characters')
-    } else if (!formData.email.includes('@')) {
+    } else if (EmailValidator.validate(formData.email) === false) {
       passedValidation = false
       setEmailErrorReason('Email not valid')
     } else {
