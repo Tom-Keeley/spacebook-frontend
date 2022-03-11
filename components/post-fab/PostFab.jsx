@@ -1,20 +1,30 @@
 import React, { useState, useContext, useEffect } from 'react'
+
+// Package imports
 import { Fab, Icon, Modal, FormControl, Button, TextArea, AddIcon, useToast } from 'native-base'
 import { AntDesign, FontAwesome } from '@expo/vector-icons'
+import propTypes from 'prop-types'
+
+// Custom imports
+import { SpaceBookContext } from '../../context/SpacebookContext'
 import { createNewPost, updateAPost } from '../../utils/HelperFunctions'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import ErrorPopup from '../error-popup/ErrorPopup'
-import { SpaceBookContext } from '../../context/SpacebookContext'
-import propTypes from 'prop-types'
 import DraftMenu from '../draft-menu/DraftMenu'
 
 export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, postToUpdate }) {
+  // Local state
   const [showModal, setShowModal] = useState(false)
   const [formData, setFormData] = useState({})
   const [textAreaValue, setTextAreaValue] = useState('')
+
+  // Context API
   const { token, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, errorAlertVisible } = useContext(SpaceBookContext)
+
+  // Init
   const toast = useToast()
 
+  // When user wants to/has finished updating a post show/hide the update modal
   useEffect(() => {
     if (updatePost === true) {
       setShowModal(true)
@@ -27,6 +37,7 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
     }
   }, [showModal])
 
+  // Add post to sever
   const addPost = async () => {
     setLoadingSpinnerVisible(true)
     const response = await createNewPost(token, id, formData.text, setErrorAlertProps)
@@ -42,6 +53,7 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
     }
   }
 
+  // Update a post and send to server
   const updateUserPost = async () => {
     setLoadingSpinnerVisible(true)
     const result = await updateAPost(token, id, postToUpdate.post_id, formData.text, setErrorAlertProps)
@@ -58,6 +70,7 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
     setShowModal(false)
   }
 
+  // Set the text for the text area
   const setTextAreaDefaultText = (draft, text) => {
     if (draft === true) {
       setTextAreaValue(text)
@@ -70,12 +83,14 @@ export default function CreatePost ({ id, getPosts, updatePost, setUpdatePost, p
     }
   }
 
+  // When the text area is being used to update a post not a draft use that posts text instead
   useEffect(() => {
     if (updatePost === true) {
       setTextAreaDefaultText(false, null)
     }
   }, [updatePost])
 
+  // Needed to update formData as the text area is a controlled component
   useEffect(() => {
     setFormData({ ...formData, text: textAreaValue })
   }, [textAreaValue])

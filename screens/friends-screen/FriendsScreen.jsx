@@ -1,21 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
+
+// Package imports
 import { VStack, HStack, Input, Icon, Box, Radio, ScrollView } from 'native-base'
 import { MaterialIcons } from '@expo/vector-icons'
 import propTypes from 'prop-types'
-
-// Context API
-import { SpaceBookContext } from '../../context/SpacebookContext'
 
 // Custom imports
 import SearchOptions from '../../components/search-options/SearchOptions'
 import UserCard from '../../components/user-card/UserCard'
 import ErrorPopup from '../../components/error-popup/ErrorPopup'
+import { SpaceBookContext } from '../../context/SpacebookContext'
 import { getfriendRequests, getUsersPaginated, searchUsers } from '../../utils/HelperFunctions'
 
 export default function FriendsScreen ({ navigation }) {
-  const { pagination, token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
-
-  // State values for this component
+  // Local state
   const [radioValue, setRadioValue] = useState('all')
   const [users, setUsers] = useState([])
   const [friends, setFriends] = useState([])
@@ -23,6 +21,9 @@ export default function FriendsScreen ({ navigation }) {
   const [friendRequestsBackup, setFriendRequestsBackup] = useState([])
   const [offset, setOffset] = useState(0)
   const [endOfResults, setEndOfResults] = useState(false)
+
+  // Context API
+  const { pagination, token, setErrorAlertProps, errorAlertVisible } = useContext(SpaceBookContext)
 
   // Get data when page loads
   useEffect(async () => {
@@ -39,6 +40,7 @@ export default function FriendsScreen ({ navigation }) {
     }
   }, [])
 
+  // Instant search and re render of users
   const searchData = async (searchValue) => {
     if (searchValue.length > 0 && (radioValue === 'all' || radioValue === 'friends')) {
       const searchResults = await searchUsers(token, setErrorAlertProps, radioValue, searchValue)
@@ -70,6 +72,7 @@ export default function FriendsScreen ({ navigation }) {
     }
   }
 
+  // Change page when pagination is used
   const changePage = (type) => {
     if (type === 'up' && endOfResults === false) {
       setOffset(offset + pagination)
@@ -78,6 +81,7 @@ export default function FriendsScreen ({ navigation }) {
     }
   }
 
+  // Get users with pagination
   const getUsersPagination = async () => {
     const results = await getUsersPaginated(token, setErrorAlertProps, radioValue, pagination, offset)
     if (results.success === true) {
@@ -94,6 +98,7 @@ export default function FriendsScreen ({ navigation }) {
     }
   }
 
+  // Needed to keep track of how many results have been returned and are displayed
   useEffect(() => {
     getUsersPagination()
   }, [offset])
@@ -105,6 +110,7 @@ export default function FriendsScreen ({ navigation }) {
     setOffset(0)
   }, [pagination])
 
+  // Conditional rendering depending on which list is selected
   const renderLists = () => {
     if (radioValue === 'all') {
       return (
@@ -130,6 +136,7 @@ export default function FriendsScreen ({ navigation }) {
     }
   }
 
+  // Conditional rendering depending on which list is selected
   const renderRefine = () => {
     if (radioValue === 'all' || radioValue === 'friends') {
       return <SearchOptions changePage={changePage} />

@@ -1,7 +1,9 @@
 import React, { useContext } from 'react'
+
+// Package imports
 import { HStack, Spinner, Heading, View, Slide, Alert } from 'native-base'
 
-// ContextAPI
+// Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function LoadingSpinner () {

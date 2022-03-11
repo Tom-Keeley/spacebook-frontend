@@ -1,24 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react'
+
+// Package imports
 import { extendTheme, NativeBaseProvider, Center, Heading, VStack, FormControl, Input, Button, Box } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
 import propTypes from 'prop-types'
 import * as EmailValidator from 'email-validator'
 
 // Custom imports
-import { SpaceBookContext } from '../../context/SpacebookContext'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import { signUp, editDetails } from '../../utils/HelperFunctions'
+import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function UserForm ({ type, navigation, firstName, lastName, email }) {
-  const { setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId, setUserId, setFormModalVisible, setUserDetailsUpdated } = useContext(SpaceBookContext)
+  // Local state
   const [formData, setData] = useState({})
   const [firstNameErrorReason, setFirstNameErrorReason] = useState('')
   const [lastNameErrorReason, setLastNameErrorReason] = useState('')
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
   const [confirmPasswordErrorReason, setConfirmPasswordErrorReason] = useState('')
-  // const toast = useToast()
 
+  // Context API
+  const { setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, token, setToken, userId, setUserId, setFormModalVisible, setUserDetailsUpdated } = useContext(SpaceBookContext)
+
+  // Validate form details
   const validateDetails = () => {
     let passedValidation = true
 
@@ -91,12 +96,14 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     return passedValidation
   }
 
+  // Handle submit
   const onSubmit = () => {
     if (validateDetails()) {
       type === 'signup' ? signUpNewUser() : editUserDetails()
     }
   }
 
+  // Send sign up request to user
   const signUpNewUser = async () => {
     console.log(formData)
     setLoadingSpinnerVisible(true)
@@ -111,6 +118,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     }
   }
 
+  // Send edit details request to server
   const editUserDetails = async () => {
     setLoadingSpinnerVisible(true)
     const response = await editDetails(token, userId, setErrorAlertProps, formData)
@@ -121,10 +129,12 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     }
   }
 
+  // Go back to the login page
   const onBackPress = () => {
     navigation.goBack()
   }
 
+  // Conditional rendering depending on if the form is used in the sign up screen or edit details screen
   const checkTypeHeader = () => {
     if (type === 'signup') {
       return (
@@ -143,6 +153,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     }
   }
 
+  // Sets default values for when the form is used on the edit details screen
   const getDefaultValues = (input) => {
     if (type === 'edit') {
       switch (input) {
@@ -158,6 +169,7 @@ export default function UserForm ({ type, navigation, firstName, lastName, email
     }
   }
 
+  // Sets the default values if the form is used on the edit details screen
   useEffect(() => {
     if (type === 'edit') {
       setData({ firstName: firstName, lastName: lastName, email: email })

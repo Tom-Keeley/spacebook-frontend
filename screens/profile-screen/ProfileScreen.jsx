@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { VStack, Center, ScrollView, Box } from 'native-base'
+
+// Package imports
+import { VStack, Center, ScrollView } from 'native-base'
 import propTypes from 'prop-types'
 
 // Custom imports
@@ -12,16 +14,18 @@ import PostFab from '../../components/post-fab/PostFab'
 import ListOfPosts from '../../components/list-of-posts/ListOfPosts'
 import BackButton from '../../components/back-button/BackButton'
 import { getPostsForAUser } from '../../utils/HelperFunctions'
-
-// ContextAPI
 import { SpaceBookContext } from '../../context/SpacebookContext'
 export default function ProfileScreen ({ route, navigation }) {
-  const { token, userId, setErrorAlertProps, loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
+  // Local state
   const { id, buttonLocation, userFirstName, userLastName } = route.params
   const [posts, setPosts] = useState([])
   const [updatePost, setUpdatePost] = useState(false)
   const [postToUpdate, setPostToUpdate] = useState({})
 
+  // Context API
+  const { token, userId, setErrorAlertProps, loadingSpinnerVisible, errorAlertVisible, firstName, lastName, email, profileType } = useContext(SpaceBookContext)
+
+  // Get a list of posts for a user
   const getPosts = async () => {
     console.log(profileType)
     if (profileType === 'personal') {
@@ -35,15 +39,18 @@ export default function ProfileScreen ({ route, navigation }) {
     }
   }
 
+  // Update a post
   const updateUserPost = (update, post) => {
     setUpdatePost(update)
     setPostToUpdate(post)
   }
 
+  // On load get a list of posts
   useEffect(() => {
     getPosts()
   }, [])
 
+  // Conditionally render componets based on if its the users own profile or another users
   const renderComponents = () => {
     if (profileType === 'personal') {
       return (
@@ -64,6 +71,7 @@ export default function ProfileScreen ({ route, navigation }) {
     }
   }
 
+  // Conditionally render the fab button depending on if its a friend of the user or not
   const renderCreateButton = () => {
     if (profileType === 'userProfile' && buttonLocation === 'friend') {
       return <PostFab id={id} getPosts={getPosts} updatePost={updatePost} setUpdatePost={setUpdatePost} postToUpdate={postToUpdate}/>

@@ -1,4 +1,6 @@
 import React from 'react'
+
+// Package imports
 import { extendTheme, NativeBaseProvider, Center, Text } from 'native-base'
 import propTypes from 'prop-types'
 

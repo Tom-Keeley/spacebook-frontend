@@ -1,11 +1,14 @@
 import React, { useContext } from 'react'
+
+// Package imports
 import { Button, Menu, HStack, ChevronLeftIcon, ChevronRightIcon } from 'native-base'
+import propTypes from 'prop-types'
 
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
-import propTypes from 'prop-types'
 
 export default function SearchOptions ({ changePage }) {
+  // Context API
   const { pagination, setPagination } = useContext(SpaceBookContext)
 
   return (

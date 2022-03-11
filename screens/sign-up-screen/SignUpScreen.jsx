@@ -1,10 +1,11 @@
 import React from 'react'
+
+// Package imports
 import { extendTheme, NativeBaseProvider } from 'native-base'
 import PropTypes from 'prop-types'
 
 // Custom imports
 import UserForm from '../../components/forms/UserForm'
-
 export default function SignUpScreen ({ navigation }) {
   return (
     <NativeBaseProvider theme={theme}>

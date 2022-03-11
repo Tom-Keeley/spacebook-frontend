@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
+
+// Package imports
 import { Modal, Button, Box } from 'native-base'
 import propTypes from 'prop-types'
 
-// Context API
-import { SpaceBookContext } from '../../context/SpacebookContext'
-
 // Custom Import
 import UserForm from '../forms/UserForm'
+import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function EditDetails ({ firstName, lastName, email, navigation }) {
+  // Context state
   const { formModalVisible, setFormModalVisible } = useContext(SpaceBookContext)
 
   return (

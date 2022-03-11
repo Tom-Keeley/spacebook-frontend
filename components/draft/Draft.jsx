@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
+
+// Package imports
 import { Box, VStack, Text, Button, Pressable, HStack, Center } from 'native-base'
 import { Feather, AntDesign } from '@expo/vector-icons'
 import propTypes from 'prop-types'
 
 export default function Draft ({ id, text, setTextAreaDefaultText, deleteDraft, selectedDraft, setSelectedDraft }) {
+  // Local state
   const [editing, setEditing] = useState(false)
 
+  // Get the draft to be edited
   const handleOnPress = () => {
     setTextAreaDefaultText(true, text)
     if (selectedDraft === id) {
@@ -17,6 +21,7 @@ export default function Draft ({ id, text, setTextAreaDefaultText, deleteDraft, 
     }
   }
 
+  // Render component based on if a draft is being edited
   const renderEditing = () => {
     if (editing === true) {
       return (

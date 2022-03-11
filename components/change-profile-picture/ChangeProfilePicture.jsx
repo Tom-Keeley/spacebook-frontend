@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
+
+// Package imports
 import { Modal, Box, Button, Menu, Center, View, Pressable, useToast } from 'native-base'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native'
@@ -6,17 +8,24 @@ import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import propTypes from 'prop-types'
 
+// Custom imports
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import { uploadProfilePicture, getUserProfilePic } from '../../utils/HelperFunctions'
 
 export default function ChangeProfilePicture ({ setImage }) {
+  // Local State
   const [type, setType] = useState(Camera.Constants.Type.back)
   const [hasPermission, setHasPermission] = useState(null)
   const [showCameraModal, setShowCameraModal] = useState(false)
+
+  // Context state
   const { setLoadingSpinnerVisible, token, userId, setErrorAlertProps, userDetailsUpdated, setUserDetailsUpdated } = useContext(SpaceBookContext)
+
+  // Init
   let camera = Camera
   const toast = useToast()
 
+  // Request camera persmission and fetch profile pic
   useEffect(async () => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync()
@@ -29,6 +38,7 @@ export default function ChangeProfilePicture ({ setImage }) {
     }
   }, [])
 
+  // User details updated - show success message
   useEffect(() => {
     if (userDetailsUpdated === true) {
       toast.show({
@@ -40,6 +50,7 @@ export default function ChangeProfilePicture ({ setImage }) {
     setUserDetailsUpdated(false)
   }, [userDetailsUpdated])
 
+  // Permssion not allowed show error
   if (hasPermission === null) {
     return <View />
   }
@@ -51,6 +62,7 @@ export default function ChangeProfilePicture ({ setImage }) {
     })
   }
 
+  // Select profile picture from gallery
   const selectProfilePicture = async () => {
     console.log('worked')
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -68,6 +80,7 @@ export default function ChangeProfilePicture ({ setImage }) {
     }
   }
 
+  // Take a picture
   const takePicture = async () => {
     const options = {
       quality: 0.5,
@@ -82,6 +95,7 @@ export default function ChangeProfilePicture ({ setImage }) {
     setImage(data.uri)
   }
 
+  // Upload new profile picture to server
   const uploadToServer = async (data) => {
     setLoadingSpinnerVisible(true)
     const response = await uploadProfilePicture(token, userId, setErrorAlertProps, data)

@@ -1,12 +1,16 @@
 import React, { useContext } from 'react'
+
+// Package imports
 import { HStack, Text, Box, Pressable } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
-import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 
+// Custom imports
+import { SpaceBookContext } from '../../context/SpacebookContext'
 export default function BackButton ({ navigation }) {
   const { setProfileType } = useContext(SpaceBookContext)
 
+  // Go back from viewing a profile
   const goBack = () => {
     setProfileType('personal')
     navigation.navigate('Friends')

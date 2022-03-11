@@ -1,27 +1,36 @@
 import React, { useContext, useState, useEffect } from 'react'
+
+// Package imports
 import { Box, Avatar, Center, Text, Button, AddIcon, CheckIcon } from 'native-base'
-import ChangeProfilePicture from '../change-profile-picture/ChangeProfilePicture'
-import MutualFriends from '../mutual-friends/MutualFriends'
 import propTypes from 'prop-types'
 
+// Custom imports
+import ChangeProfilePicture from '../change-profile-picture/ChangeProfilePicture'
+import MutualFriends from '../mutual-friends/MutualFriends'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import { getUserProfilePic, sendFriendRequest } from '../../utils/HelperFunctions'
 
 export default function ProfileInformation ({ id, buttonLocation, userFirstName, userLastName }) {
+  // Local state
   const [image, setImage] = useState(null)
-  const { firstName, email, token, userId, setErrorAlertProps, profileType } = useContext(SpaceBookContext)
   const [buttonIcon, setButtonIcon] = useState(<AddIcon size="4" />)
   const [buttonVariant, setButtonVariant] = useState('solid')
   const [buttonText, setButtonText] = useState('Add Friend')
 
+  // Context API
+  const { firstName, email, token, userId, setErrorAlertProps, profileType } = useContext(SpaceBookContext)
+
+  // Get profile picture on load
   useEffect(async () => {
     getProfilePic()
   }, [])
 
+  // When the profile type changes re fetch the profile picture
   useEffect(() => {
     getProfilePic()
   }, [profileType])
 
+  // Send a friend request
   const addFriend = async () => {
     const response = await sendFriendRequest(token, id, setErrorAlertProps)
     if (response.success === true) {
@@ -31,6 +40,7 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
     }
   }
 
+  // Fetch profile picture depending on if its own or another users profile
   const getProfilePic = async () => {
     if (profileType === 'personal') {
       const profilePictureResponse = await getUserProfilePic(token, userId, setErrorAlertProps)
@@ -45,6 +55,7 @@ export default function ProfileInformation ({ id, buttonLocation, userFirstName,
     }
   }
 
+  // Conditional rendering depending on if its the users own profile or another profile
   const renderName = () => {
     if (profileType === 'personal') {
       return (

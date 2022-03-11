@@ -1,17 +1,26 @@
 import React, { useContext, useState } from 'react'
+
+// Package imports
 import { Box, Text, Button, HStack, Flex, Center, useToast } from 'native-base'
 import propTypes from 'prop-types'
 
+// Custom imports
 import { sendFriendRequest, acceptFriendRequest, rejectFriendRequest } from '../../utils/HelperFunctions'
 
 // Context API
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function UserCard ({ type, id, firstName, lastName, friendRequests, setFriendRequests, navigation }) {
-  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests, setProfileType, loadingSpinnerVisible, setloadingSpinnerVisible } = useContext(SpaceBookContext)
+  // Local state
   const [buttonDisabled, setButtonDisabled] = useState(false)
+
+  // Context API
+  const { token, setErrorAlertProps, totalFriendRequests, setTotalFriendRequests, setProfileType, loadingSpinnerVisible, setloadingSpinnerVisible } = useContext(SpaceBookContext)
+
+  // Init
   const toast = useToast()
 
+  // Send a friend request
   const newFriendRequest = async () => {
     const response = await sendFriendRequest(token, id, setErrorAlertProps)
     if (response.success === true) {
@@ -24,6 +33,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     }
   }
 
+  // Accept friend request
   const acceptRequest = async () => {
     const response = await acceptFriendRequest(token, setErrorAlertProps, id)
     if (response.success === true) {
@@ -39,6 +49,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     }
   }
 
+  // Reject friend request
   const rejectRequest = async () => {
     const response = await rejectFriendRequest(token, id, setErrorAlertProps)
     if (response.success === true) {
@@ -53,7 +64,8 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
       removeRequestFromState()
     }
   }
-
+  
+  // Re-render list of requests
   const removeRequestFromState = () => {
     const index = friendRequests.findIndex(request => request.user_id === id)
     const tempArray = [...friendRequests]
@@ -61,11 +73,13 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
     setFriendRequests(tempArray)
   }
 
+  // View the users profile
   const viewProfile = (buttonLocation) => {
     setProfileType('userProfile')
     navigation.navigate('Profile', { id: id, buttonLocation: buttonLocation, userFirstName: firstName, userLastName: lastName })
   }
 
+  // Conditionally render buttons depending on which list the button is pressed in
   const returnButtons = () => {
     if (type === 'find') {
       return (

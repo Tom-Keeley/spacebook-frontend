@@ -1,22 +1,33 @@
 import React, { useContext, useState, useEffect } from 'react'
+
+// Package imports
 import { Box, Text, VStack, Button, HStack, Center, useToast, Pressable } from 'native-base'
 import { FontAwesome5 } from '@expo/vector-icons'
+import propTypes from 'prop-types'
+
+// Custom imports
 import { likeAPost, removeLikeFromAPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
-import propTypes from 'prop-types'
 import PostOptions from '../post-options/PostOptions'
 export default function Post ({ id, post, getPosts, updateUserPost, viewPost }) {
-  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+  // Local state
   const [postText, setPostText] = useState('')
   const [postLikes, setPostLikes] = useState(0)
   const [likedPost, setLikedPost] = useState(false)
+
+  // Context API
+  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+
+  // Init
   const toast = useToast()
 
+  // Get post details on load
   useEffect(() => {
     setPostLikes(post.numLikes)
     setPostText(post.text)
   }, [])
 
+  // Like a post
   const likePost = async () => {
     const response = await likeAPost(token, id, post.post_id, setErrorAlertProps)
     if (response.success === true) {
@@ -32,6 +43,7 @@ export default function Post ({ id, post, getPosts, updateUserPost, viewPost }) 
     }
   }
 
+  // Remove a like
   const removeLikeFromPost = async () => {
     const response = await removeLikeFromAPost(token, id, post.post_id, setErrorAlertProps)
     if (response.success === true) {
@@ -45,6 +57,7 @@ export default function Post ({ id, post, getPosts, updateUserPost, viewPost }) 
     }
   }
 
+  // Render text depending on text length
   const renderText = () => {
     if (postText.length > 40) {
       return (

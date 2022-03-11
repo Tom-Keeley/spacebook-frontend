@@ -1,14 +1,22 @@
 import React, { useState, useContext, useEffect } from 'react'
+
+// Package imports
+import propTypes from 'prop-types'
+
+// Custom imports
 import { viewASinglePost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import { Button, Modal, Text } from 'native-base'
-import propTypes from 'prop-types'
 
 export default function ViewPost ({ postData, viewPostVisible, setViewPostVisible }) {
-  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+  // Local imports
   const [postAuthor, setPostAuthor] = useState('')
   const [postText, setPostText] = useState('')
 
+  // Context API
+  const { token, setErrorAlertProps } = useContext(SpaceBookContext)
+
+  // On render get single post details
   useEffect(async () => {
     const response = await viewASinglePost(token, postData.id, postData.postId, setErrorAlertProps)
     if (response.success === true) {

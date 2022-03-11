@@ -1,14 +1,22 @@
 import React, { useContext } from 'react'
+
+// Package imports
 import { Menu, Pressable, useToast } from 'native-base'
+import propTypes from 'prop-types'
+
+// Custom imports
 import { SimpleLineIcons } from '@expo/vector-icons'
 import { deleteUserPost } from '../../utils/HelperFunctions'
 import { SpaceBookContext } from '../../context/SpacebookContext'
-import propTypes from 'prop-types'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 export default function PostOptions ({ id, postId, getPosts, updateUserPost, post }) {
+  // Context API
   const { token, setErrorAlertProps, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
+
+  // INIT
   const toast = useToast()
 
+  // Delete a post from the server
   const deletePost = async () => {
     setLoadingSpinnerVisible(true)
     const response = await deleteUserPost(token, id, postId, setErrorAlertProps)

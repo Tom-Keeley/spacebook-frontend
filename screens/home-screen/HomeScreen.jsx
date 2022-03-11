@@ -1,4 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
+
+// Package imports
 import { extendTheme, NativeBaseProvider } from 'native-base'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
@@ -10,10 +12,16 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function HomeScreen () {
-  const { numOfFriendRequests, totalFriendRequests, token, setErrorAlertProps } = useContext(SpaceBookContext)
+  // Local state
   const [tabOptions, setTabOptions] = useState({})
+
+  // Context API
+  const { numOfFriendRequests, totalFriendRequests, token, setErrorAlertProps } = useContext(SpaceBookContext)
+
+  // Init
   const Tab = createBottomTabNavigator()
 
+  // Render a notification badge if there are friend requests
   const renderTabBadge = async () => {
     if (totalFriendRequests > 0) {
       setTabOptions({ tabBarIcon: () => (<FontAwesome5 name='user-friends' size={24} color='black' />), tabBarBadge: totalFriendRequests })
@@ -22,11 +30,13 @@ export default function HomeScreen () {
     }
   }
 
+  // Get number of friend requests and render badge if there are on render
   useEffect(async () => {
     await numOfFriendRequests(token, setErrorAlertProps)
     renderTabBadge()
   }, [])
 
+  // If number of friend requests changes re render badge
   useEffect(() => {
     renderTabBadge()
   }, [totalFriendRequests])

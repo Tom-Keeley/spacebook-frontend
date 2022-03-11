@@ -1,5 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react'
+
+// Package imports
 import propTypes from 'prop-types'
+
+// Custom imports
 import { getNumOfFriendRequests } from '../utils/HelperFunctions'
 
 export const SpaceBookContext = createContext()

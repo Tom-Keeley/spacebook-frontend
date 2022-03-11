@@ -1,20 +1,26 @@
 import React, { useContext, useEffect, useState } from 'react'
+
+// Package imports
 import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
-import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
 import * as EmailValidator from 'email-validator'
 
-// Import custom
+// Custom imports
 import ErrorPopup from '../error-popup/ErrorPopup'
 import LoadingSpinner from '../loading-spinner/LoadingSpinner'
 import { login } from '../../utils/HelperFunctions'
+import { SpaceBookContext } from '../../context/SpacebookContext'
 
 export default function LoginForm ({ navigation }) {
+  // Local state
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
+
+  // Context API
   const { setToken, setUserId, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, setProfileType } = useContext(SpaceBookContext)
 
+  // Validate log in details
   const validateLoginDetails = () => {
     let passedValidation = true
 
@@ -46,12 +52,14 @@ export default function LoginForm ({ navigation }) {
     return passedValidation
   }
 
+  // Handle submit
   const onSubmit = async () => {
     if (validateLoginDetails()) {
       loginUser()
     }
   }
 
+  // Send log in request to server
   const loginUser = async () => {
     setLoadingSpinnerVisible(true)
     const response = await login(setErrorAlertProps, formData)

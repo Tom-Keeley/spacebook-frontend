@@ -1,17 +1,25 @@
 import React, { useContext, useState, useEffect } from 'react'
+
+// Package imports
 import { getFriends, getUsersFriends } from '../../utils/HelperFunctions'
-import { SpaceBookContext } from '../../context/SpacebookContext'
 import { Text } from 'native-base'
 import propTypes from 'prop-types'
 
+// Custom imports
+import { SpaceBookContext } from '../../context/SpacebookContext'
 export default function MutualFriends ({ id }) {
-  const { token, userId, setErrorAlertProps } = useContext(SpaceBookContext)
+  // Local State
   const [count, setCount] = useState(0)
 
+  // Context API
+  const { token, userId, setErrorAlertProps } = useContext(SpaceBookContext)
+
+  // Get friends list on load
   useEffect(() => {
     getFriendsLists()
   }, [])
 
+  // Show how many mutual friends a user has
   const getFriendsLists = async () => {
     const friendsResponse = await getFriends(token, userId, setErrorAlertProps)
     const userFriendsResponse = await getUsersFriends(token, id, setErrorAlertProps)
