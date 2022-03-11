@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Box, Heading, VStack, Button } from 'native-base'
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import propTypes from 'prop-types'
 
 // Context API
@@ -24,7 +24,7 @@ export default function SettingsScreen ({ navigation }) {
   }
 
   return (
-    <Box>
+    <>
       {loadingSpinnerVisible && <LoadingSpinner />}
       {errorAlertVisible && <ErrorPopup />}
       <Heading fontSize="xl" p="4" pb="3">
@@ -32,11 +32,10 @@ export default function SettingsScreen ({ navigation }) {
       </Heading>
       <Box bg={'white'} p={'10'} m={'2'} borderRadius={'5'} shadow={'5'}>
         <VStack p='10'>
-          <Button endIcon={<MaterialCommunityIcons name="theme-light-dark" size={20} color="white" />} m="1">Change Theme</Button>
           <Button onPress={signOut} endIcon={<MaterialIcons name="logout" size={20} color="white" />} m='1'>Log Out</Button>
         </VStack>
       </Box>
-    </Box>
+    </>
   )
 }
 

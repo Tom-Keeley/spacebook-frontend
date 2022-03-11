@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { VStack, Center, ScrollView } from 'native-base'
+import { VStack, Center, ScrollView, Box } from 'native-base'
 import propTypes from 'prop-types'
 
 // Custom imports

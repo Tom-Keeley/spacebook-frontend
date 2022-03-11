@@ -15,7 +15,7 @@ export default function BackButton ({ navigation }) {
   return (
     <Pressable onPress={goBack}>
       <Box m={2} p={2} borderRadius={'5'} shadow={'5'}>
-        <HStack w={'100%'} justifyContent={'start'}>
+        <HStack w={'100%'}>
           <AntDesign name="arrowleft" size={24} color="black" />
           <Text alignSelf={'center'}>Back</Text>
         </HStack>

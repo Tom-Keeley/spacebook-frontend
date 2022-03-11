@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Center, Text, Box, Heading, Button, VStack, FormControl, Input, Link, HStack, View } from 'native-base'
 import { SpaceBookContext } from '../../context/SpacebookContext'
 import propTypes from 'prop-types'
+import * as EmailValidator from 'email-validator'
 
 // Import custom
 import ErrorPopup from '../error-popup/ErrorPopup'
@@ -24,7 +25,7 @@ export default function LoginForm ({ navigation }) {
     } else if (formData.email.length < 6) {
       passedValidation = false
       setEmailErrorReason('Email cannot be less than 6 characters')
-    } else if (!formData.email.includes('@')) {
+    } else if (EmailValidator.validate(formData.email) === false) {
       passedValidation = false
       setEmailErrorReason('Email is not vaild')
     } else {

@@ -1,7 +1,12 @@
+// Android Emulator
+// const address = '10.0.2.2:3333'
+// Web App
+const address = 'localhost:3333'
+
 // Login POST
 export const login = async (setErrorAlertProps, formData) => {
   try {
-    const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+    const response = await fetch(`http://${address}/api/1.0.0/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -36,7 +41,7 @@ export const login = async (setErrorAlertProps, formData) => {
 // Log out POST
 export const logOut = async (token, setErrorAlertProps) => {
   try {
-    const response = await fetch('http://localhost:3333/api/1.0.0/logout', {
+    const response = await fetch(`http://${address}/api/1.0.0/logout`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -64,7 +69,7 @@ export const logOut = async (token, setErrorAlertProps) => {
 // Sign up POST
 export const signUp = async (setErrorAlertProps, formData) => {
   try {
-    const response = await fetch('http://localhost:3333/api/1.0.0/user', {
+    const response = await fetch(`http://${address}/api/1.0.0/user`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -81,7 +86,7 @@ export const signUp = async (setErrorAlertProps, formData) => {
     switch (response.status) {
       case (201): {
         try {
-          const response = await fetch('http://localhost:3333/api/1.0.0/login', {
+          const response = await fetch(`http://${address}/api/1.0.0/login`, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -129,7 +134,7 @@ export const signUp = async (setErrorAlertProps, formData) => {
 // Edit details PATCH
 export const editDetails = async (token, userId, setErrorAlertProps, formData) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${userId}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
@@ -173,7 +178,7 @@ export const editDetails = async (token, userId, setErrorAlertProps, formData) =
 // Get user details GET
 export const getUserDetails = async (token, userId, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${userId}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -208,7 +213,7 @@ export const getUserDetails = async (token, userId, setErrorAlertProps) => {
 // Get user profile picture GET
 export const getUserProfilePic = async (token, userId, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${userId}/photo`, {
       method: 'GET',
       headers: {
         'X-Authorization': token
@@ -243,7 +248,7 @@ export const getUserProfilePic = async (token, userId, setErrorAlertProps) => {
 // Upload profile picture POST
 export const uploadProfilePicture = async (token, userId, setErrorAlertProps, data) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${userId}/photo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'image/png',
@@ -282,7 +287,7 @@ export const uploadProfilePicture = async (token, userId, setErrorAlertProps, da
 // Get list of friends GET
 export const getFriends = async (token, userId, setErrorAlertProps) => {
   try {
-    const friendsResponse = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/friends`, {
+    const friendsResponse = await fetch(`http://${address}/api/1.0.0/user/${userId}/friends`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -322,7 +327,7 @@ export const getFriends = async (token, userId, setErrorAlertProps) => {
 // Get list of friend Requests GET
 export const getfriendRequests = async (token, setErrorAlertProps) => {
   try {
-    const friendRequestResponse = await fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+    const friendRequestResponse = await fetch(`http://${address}/api/1.0.0/friendrequests`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -354,7 +359,7 @@ export const getfriendRequests = async (token, setErrorAlertProps) => {
 // Search for a user or friend
 export const searchUsers = async (token, setErrorAlertProps, searchIn, searchValue) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${searchValue}&searchin=${searchIn}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/search?q=${searchValue}&searchin=${searchIn}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -385,7 +390,7 @@ export const searchUsers = async (token, setErrorAlertProps, searchIn, searchVal
 // Get list of users - paginated GET
 export const getUsersPaginated = async (token, setErrorAlertProps, radioValue, pagination, offset) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/search?search_in=${radioValue}&limit=${pagination}&offset=${offset}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/search?search_in=${radioValue}&limit=${pagination}&offset=${offset}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -419,7 +424,7 @@ export const getUsersPaginated = async (token, setErrorAlertProps, radioValue, p
 // Send a friend request POST
 export const sendFriendRequest = async (token, id, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/friends`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -459,7 +464,7 @@ export const sendFriendRequest = async (token, id, setErrorAlertProps) => {
 // Accept a friend request POST
 export const acceptFriendRequest = async (token, setErrorAlertProps, id) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/friendrequests/${id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -495,7 +500,7 @@ export const acceptFriendRequest = async (token, setErrorAlertProps, id) => {
 // Reject a friend request DELETE
 export const rejectFriendRequest = async (token, id, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/friendrequests/${id}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -531,7 +536,7 @@ export const rejectFriendRequest = async (token, id, setErrorAlertProps) => {
 // Get a list of friends for a user GET
 export const getUsersFriends = async (token, id, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/friends`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -570,7 +575,7 @@ export const getUsersFriends = async (token, id, setErrorAlertProps) => {
 // Create a new post POST
 export const createNewPost = async (token, id, text, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -608,7 +613,7 @@ export const createNewPost = async (token, id, text, setErrorAlertProps) => {
 // Get a list of posts for a user GET
 export const getPostsForAUser = async (token, id, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -647,7 +652,7 @@ export const getPostsForAUser = async (token, id, setErrorAlertProps) => {
 // Like a post POST
 export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}/like`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}/like`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -687,7 +692,7 @@ export const likeAPost = async (token, id, postId, setErrorAlertProps) => {
 // Remove a like from a post DELETE
 export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}/like`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}/like`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -726,7 +731,7 @@ export const removeLikeFromAPost = async (token, id, postId, setErrorAlertProps)
 export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
   console.log(id + ' ' + postId)
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -768,7 +773,7 @@ export const deleteUserPost = async (token, id, postId, setErrorAlertProps) => {
 // Update a post PATCH
 export const updateAPost = async (token, id, postId, text, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
@@ -814,7 +819,7 @@ export const updateAPost = async (token, id, postId, text, setErrorAlertProps) =
 // View a single post GET
 export const viewASinglePost = async (token, id, postId, setErrorAlertProps) => {
   try {
-    const response = await fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${postId}`, {
+    const response = await fetch(`http://${address}/api/1.0.0/user/${id}/post/${postId}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -853,7 +858,7 @@ export const viewASinglePost = async (token, id, postId, setErrorAlertProps) => 
 // MISC
 export const getNumOfFriendRequests = async (token, setErrorAlertProps) => {
   try {
-    const friendRequestResponse = await fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+    const friendRequestResponse = await fetch(`http://${address}/api/1.0.0/friendrequests`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

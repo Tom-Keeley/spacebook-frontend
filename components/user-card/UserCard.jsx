@@ -97,7 +97,7 @@ export default function UserCard ({ type, id, firstName, lastName, friendRequest
           <Box>
             <Text alignSelf={'center'}>{firstName} {lastName}</Text>
           </Box>
-          <Box alignItems={'right'}>
+          <Box>
             <Center>
               <HStack>
                 {returnButtons()}
