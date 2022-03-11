@@ -87,3 +87,7 @@ DraftMenu.propTypes = {
   text: propTypes.string.isRequired,
   setTextAreaDefaultText: propTypes.func.isRequired
 }
+
+DraftMenu.defaultProps = {
+  text: ''
+}
