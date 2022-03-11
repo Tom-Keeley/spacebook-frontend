@@ -12,7 +12,7 @@ export default function LoginForm ({ navigation }) {
   const [formData, setData] = useState({})
   const [emailErrorReason, setEmailErrorReason] = useState('')
   const [passwordErrorReason, setPasswordErrorReason] = useState('')
-  const { setToken, setUserId, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible } = useContext(SpaceBookContext)
+  const { setToken, setUserId, errorAlertVisible, setErrorAlertProps, loadingSpinnerVisible, setLoadingSpinnerVisible, setProfileType } = useContext(SpaceBookContext)
 
   const validateLoginDetails = () => {
     let passedValidation = true
@@ -58,6 +58,7 @@ export default function LoginForm ({ navigation }) {
       setToken(response.token)
       setUserId(response.userId)
       setLoadingSpinnerVisible(false)
+      setProfileType('personal')
       navigation.push('Home')
     }
   }
